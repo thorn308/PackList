@@ -1,0 +1,676 @@
+- generic [ref=e1017]:
+  - generic [ref=e1018]:
+    - button "← Trips" [ref=e1019]
+    - generic [ref=e1020]:
+      - heading "Summer Beach Vacation" [level=1] [ref=e1021]
+      - paragraph [ref=e1022]: Miami, FL
+    - button "Trip options" [ref=e1024]: ⋯
+  - generic [ref=e1027]:
+    - generic [ref=e1028]: 0 of 17 packed
+    - generic [ref=e1029]: 0%
+  - generic [ref=e1031]:
+    - generic [ref=e1032]:
+      - paragraph [ref=e1033]: Pack Weight
+      - paragraph [ref=e1034]: 15.8 lb
+    - generic [ref=e1036]:
+      - paragraph [ref=e1037]: Packed
+      - paragraph [ref=e1038]: —
+    - generic [ref=e1040]:
+      - paragraph [ref=e1041]: Remaining
+      - paragraph [ref=e1042]: 15.8 lb
+  - generic [ref=e1043]:
+    - button "all" [ref=e1044]
+    - button "unpacked" [ref=e1045]
+    - button "packed" [ref=e1046]
+  - generic [ref=e1047]:
+    - generic [ref=e1048]:
+      - generic [ref=e1049]:
+        - button "Collapse Clothing" [ref=e1050]:
+          - generic [ref=e1051]: ▶
+          - generic [ref=e1052]: Clothing
+        - generic [ref=e1053]:
+          - generic [ref=e1054]: 0/6
+          - button "Delete Clothing category" [ref=e1055]: ×
+      - list [ref=e1056]:
+        - listitem [ref=e1057]:
+          - button [ref=e1058]
+          - generic [ref=e1059]:
+            - generic [ref=e1060]:
+              - text: Swimsuit
+              - generic [ref=e1061]: ×2
+            - button "0.6 lb" [ref=e1062]
+          - button "Remove Swimsuit" [ref=e1063]: ×
+        - listitem [ref=e1064]:
+          - button [ref=e1065]
+          - generic [ref=e1066]:
+            - text: Cover-up
+            - button "0.4 lb" [ref=e1067]
+          - button "Remove Cover-up" [ref=e1068]: ×
+        - listitem [ref=e1069]:
+          - button [ref=e1070]
+          - generic [ref=e1071]:
+            - generic [ref=e1072]:
+              - text: Shorts
+              - generic [ref=e1073]: ×3
+            - button "1.5 lb" [ref=e1074]
+          - button "Remove Shorts" [ref=e1075]: ×
+        - listitem [ref=e1076]:
+          - button [ref=e1077]
+          - generic [ref=e1078]:
+            - generic [ref=e1079]:
+              - text: T-shirts
+              - generic [ref=e1080]: ×3
+            - button "1.2 lb" [ref=e1081]
+          - button "Remove T-shirts" [ref=e1082]: ×
+        - listitem [ref=e1083]:
+          - button [ref=e1084]
+          - generic [ref=e1085]:
+            - text: Sandals
+            - button "1.2 lb" [ref=e1086]
+          - button "Remove Sandals" [ref=e1087]: ×
+        - listitem [ref=e1088]:
+          - button [ref=e1089]
+          - generic [ref=e1090]:
+            - text: Flip flops
+            - button "0.8 lb" [ref=e1091]
+          - button "Remove Flip flops" [ref=e1092]: ×
+    - generic [ref=e1093]:
+      - generic [ref=e1094]:
+        - button "Collapse Gear" [ref=e1095]:
+          - generic [ref=e1096]: ▶
+          - generic [ref=e1097]: Gear
+        - generic [ref=e1098]:
+          - generic [ref=e1099]: 0/5
+          - button "Delete Gear category" [ref=e1100]: ×
+      - list [ref=e1101]:
+        - listitem [ref=e1102]:
+          - button [ref=e1103]
+          - generic [ref=e1104]:
+            - generic [ref=e1105]:
+              - text: Beach towel
+              - generic [ref=e1106]: ×2
+            - button "3 lb" [ref=e1107]
+          - button "Remove Beach towel" [ref=e1108]: ×
+        - listitem [ref=e1109]:
+          - button [ref=e1110]
+          - generic [ref=e1111]:
+            - text: Sunscreen SPF 50+
+            - button "0.6 lb" [ref=e1112]
+          - button "Remove Sunscreen SPF 50+" [ref=e1113]: ×
+        - listitem [ref=e1114]:
+          - button [ref=e1115]
+          - generic [ref=e1116]:
+            - text: Sunglasses
+            - button "0.2 lb" [ref=e1117]
+          - button "Remove Sunglasses" [ref=e1118]: ×
+        - listitem [ref=e1119]:
+          - button [ref=e1120]
+          - generic [ref=e1121]:
+            - text: Beach bag
+            - button "0.9 lb" [ref=e1122]
+          - button "Remove Beach bag" [ref=e1123]: ×
+        - listitem [ref=e1124]:
+          - button [ref=e1125]
+          - generic [ref=e1126]:
+            - text: Umbrella / shade tent
+            - button "3.2 lb" [ref=e1127]
+          - button "Remove Umbrella / shade tent" [ref=e1128]: ×
+    - generic [ref=e1129]:
+      - generic [ref=e1130]:
+        - button "Collapse Toiletries" [ref=e1131]:
+          - generic [ref=e1132]: ▶
+          - generic [ref=e1133]: Toiletries
+        - generic [ref=e1134]:
+          - generic [ref=e1135]: 0/3
+          - button "Delete Toiletries category" [ref=e1136]: ×
+      - list [ref=e1137]:
+        - listitem [ref=e1138]:
+          - button [ref=e1139]
+          - generic [ref=e1140]:
+            - text: Toothbrush & toothpaste
+            - button "0.3 lb" [ref=e1141]
+          - button "Remove Toothbrush & toothpaste" [ref=e1142]: ×
+        - listitem [ref=e1143]:
+          - button [ref=e1144]
+          - generic [ref=e1145]:
+            - text: Shampoo & conditioner
+            - button "1.1 lb" [ref=e1146]
+          - button "Remove Shampoo & conditioner" [ref=e1147]: ×
+        - listitem [ref=e1148]:
+          - button [ref=e1149]
+          - generic [ref=e1150]:
+            - text: After-sun lotion
+            - button "0.5 lb" [ref=e1151]
+          - button "Remove After-sun lotion" [ref=e1152]: ×
+    - generic [ref=e1153]:
+      - generic [ref=e1154]:
+        - button "Collapse Documents" [ref=e1155]:
+          - generic [ref=e1156]: ▶
+          - generic [ref=e1157]: Documents
+        - generic [ref=e1158]:
+          - generic [ref=e1159]: 0/3
+          - button "Delete Documents category" [ref=e1160]: ×
+      - list [ref=e1161]:
+        - listitem [ref=e1162]:
+          - button [ref=e1163]
+          - generic [ref=e1164]:
+            - text: ID / passport
+            - button "0.1 lb" [ref=e1165]
+          - button "Remove ID / passport" [ref=e1166]: ×
+        - listitem [ref=e1167]:
+          - button [ref=e1168]
+          - generic [ref=e1169]:
+            - text: Travel insurance
+            - button "0.1 lb" [ref=e1170]
+          - button "Remove Travel insurance" [ref=e1171]: ×
+        - listitem [ref=e1172]:
+          - button [ref=e1173]
+          - generic [ref=e1174]:
+            - text: Hotel confirmation
+            - button "0.1 lb" [ref=e1175]
+          - button "Remove Hotel confirmation" [ref=e1176]: ×
+  - generic [ref=e1177]:
+    - button "+ Custom" [ref=e1178]
+    - button "📦 Library" [ref=e1179]
+    - button "+ Category" [ref=e1180]
+  - generic [ref=e1181]:
+    - generic [ref=e1182]:
+      - button "✕" [ref=e1183]
+      - heading "Select from Gear Library" [level=2] [ref=e1184]
+    - textbox "Search gear..." [active] [ref=e1186]
+    - generic [ref=e1187]:
+      - button "All" [ref=e1188]
+      - button "Clothing" [ref=e1189]
+      - button "Documents" [ref=e1190]
+      - button "Electronics" [ref=e1191]
+      - button "First Aid" [ref=e1192]
+      - button "Fishing" [ref=e1193]
+      - button "Food & Cooking" [ref=e1194]
+      - button "Footwear" [ref=e1195]
+      - button "Gear" [ref=e1196]
+      - button "Hunting" [ref=e1197]
+      - button "Hydration" [ref=e1198]
+      - button "Navigation" [ref=e1199]
+      - button "Outerwear" [ref=e1200]
+      - button "Shelter & Sleep" [ref=e1201]
+      - button "Toiletries" [ref=e1202]
+    - generic [ref=e1203]:
+      - generic [ref=e1204]:
+        - generic [ref=e1205]: Clothing
+        - list [ref=e1206]:
+          - listitem [ref=e1207] [cursor=pointer]:
+            - generic [ref=e1209]: Moisture-wicking shirt
+            - generic [ref=e1210]: 0.4 lb
+          - listitem [ref=e1211] [cursor=pointer]:
+            - generic [ref=e1213]: Hiking pants
+            - generic [ref=e1214]: 0.8 lb
+          - listitem [ref=e1215] [cursor=pointer]:
+            - generic [ref=e1217]: Convertible pants
+            - generic [ref=e1218]: 0.9 lb
+          - listitem [ref=e1219] [cursor=pointer]:
+            - generic [ref=e1221]: Base layer top
+            - generic [ref=e1222]: 0.5 lb
+          - listitem [ref=e1223] [cursor=pointer]:
+            - generic [ref=e1225]: Base layer bottom
+            - generic [ref=e1226]: 0.4 lb
+          - listitem [ref=e1227] [cursor=pointer]:
+            - generic [ref=e1229]: Wool socks
+            - generic [ref=e1230]: 0.2 lb
+          - listitem [ref=e1231] [cursor=pointer]:
+            - generic [ref=e1233]: Liner socks
+            - generic [ref=e1234]: 0.1 lb
+          - listitem [ref=e1235] [cursor=pointer]:
+            - generic [ref=e1237]: Underwear
+            - generic [ref=e1238]: 0.1 lb
+          - listitem [ref=e1239] [cursor=pointer]:
+            - generic [ref=e1241]: Sun hat
+            - generic [ref=e1242]: 0.2 lb
+          - listitem [ref=e1243] [cursor=pointer]:
+            - generic [ref=e1245]: Gaiters
+            - generic [ref=e1246]: 0.4 lb
+          - listitem [ref=e1247] [cursor=pointer]:
+            - generic [ref=e1249]: Buff / neck gaiter
+            - generic [ref=e1250]: 0.1 lb
+      - generic [ref=e1251]:
+        - generic [ref=e1252]: Documents
+        - list [ref=e1253]:
+          - listitem [ref=e1254] [cursor=pointer]:
+            - generic [ref=e1256]: Government-issued ID
+          - listitem [ref=e1257] [cursor=pointer]:
+            - generic [ref=e1259]: Passport
+            - generic [ref=e1260]: 0.1 lb
+          - listitem [ref=e1261] [cursor=pointer]:
+            - generic [ref=e1263]: Land access permit
+          - listitem [ref=e1264] [cursor=pointer]:
+            - generic [ref=e1266]: Vehicle registration
+          - listitem [ref=e1267] [cursor=pointer]:
+            - generic [ref=e1269]: Emergency contact sheet
+          - listitem [ref=e1270] [cursor=pointer]:
+            - generic [ref=e1272]: Topo map (printed)
+            - generic [ref=e1273]: 0.1 lb
+      - generic [ref=e1274]:
+        - generic [ref=e1275]: Electronics
+        - list [ref=e1276]:
+          - listitem [ref=e1277] [cursor=pointer]:
+            - generic [ref=e1279]: Headlamp (spare batteries)
+            - generic [ref=e1280]: 0.2 lb
+          - listitem [ref=e1281] [cursor=pointer]:
+            - generic [ref=e1283]: Power bank (10000mAh)
+            - generic [ref=e1284]: 0.7 lb
+          - listitem [ref=e1285] [cursor=pointer]:
+            - generic [ref=e1287]: Solar charger panel
+            - generic [ref=e1288]: 0.8 lb
+          - listitem [ref=e1289] [cursor=pointer]:
+            - generic [ref=e1291]: Walkie-talkie (pair)
+            - generic [ref=e1292]: 1 lb
+          - listitem [ref=e1293] [cursor=pointer]:
+            - generic [ref=e1295]: Action camera
+            - generic [ref=e1296]: 0.4 lb
+          - listitem [ref=e1297] [cursor=pointer]:
+            - generic [ref=e1299]: Camera battery (spare)
+            - generic [ref=e1300]: 0.1 lb
+          - listitem [ref=e1301] [cursor=pointer]:
+            - generic [ref=e1303]: Charging cables
+            - generic [ref=e1304]: 0.2 lb
+      - generic [ref=e1305]:
+        - generic [ref=e1306]: First Aid
+        - list [ref=e1307]:
+          - listitem [ref=e1308] [cursor=pointer]:
+            - generic [ref=e1310]: First aid kit
+            - generic [ref=e1311]: 1 lb
+          - listitem [ref=e1312] [cursor=pointer]:
+            - generic [ref=e1314]: Blister kit
+            - generic [ref=e1315]: 0.2 lb
+          - listitem [ref=e1316] [cursor=pointer]:
+            - generic [ref=e1318]: Tourniquet (CAT)
+            - generic [ref=e1319]: 0.4 lb
+          - listitem [ref=e1320] [cursor=pointer]:
+            - generic [ref=e1322]: Ace bandage
+            - generic [ref=e1323]: 0.3 lb
+          - listitem [ref=e1324] [cursor=pointer]:
+            - generic [ref=e1326]: SAM splint
+            - generic [ref=e1327]: 0.2 lb
+          - listitem [ref=e1328] [cursor=pointer]:
+            - generic [ref=e1330]: Ibuprofen
+            - generic [ref=e1331]: 0.1 lb
+          - listitem [ref=e1332] [cursor=pointer]:
+            - generic [ref=e1334]: Antihistamine
+            - generic [ref=e1335]: 0.1 lb
+          - listitem [ref=e1336] [cursor=pointer]:
+            - generic [ref=e1338]: Moleskin
+            - generic [ref=e1339]: 0.1 lb
+          - listitem [ref=e1340] [cursor=pointer]:
+            - generic [ref=e1342]: Medical tape
+            - generic [ref=e1343]: 0.1 lb
+          - listitem [ref=e1344] [cursor=pointer]:
+            - generic [ref=e1346]: Irrigation syringe
+            - generic [ref=e1347]: 0.1 lb
+      - generic [ref=e1348]:
+        - generic [ref=e1349]: Fishing
+        - list [ref=e1350]:
+          - listitem [ref=e1351] [cursor=pointer]:
+            - generic [ref=e1353]: Fishing rod & reel
+            - generic [ref=e1354]: 1.5 lb
+          - listitem [ref=e1355] [cursor=pointer]:
+            - generic [ref=e1357]: Tackle box
+            - generic [ref=e1358]: 2 lb
+          - listitem [ref=e1359] [cursor=pointer]:
+            - generic [ref=e1361]: Fly fishing vest
+            - generic [ref=e1362]: 1 lb
+          - listitem [ref=e1363] [cursor=pointer]:
+            - generic [ref=e1365]: Waders
+            - generic [ref=e1366]: 4 lb
+          - listitem [ref=e1367] [cursor=pointer]:
+            - generic [ref=e1369]: Fishing license
+          - listitem [ref=e1370] [cursor=pointer]:
+            - generic [ref=e1372]: Net
+            - generic [ref=e1373]: 0.8 lb
+          - listitem [ref=e1374] [cursor=pointer]:
+            - generic [ref=e1376]: Cooler (small)
+            - generic [ref=e1377]: 3.5 lb
+      - generic [ref=e1378]:
+        - generic [ref=e1379]: Food & Cooking
+        - list [ref=e1380]:
+          - listitem [ref=e1381] [cursor=pointer]:
+            - generic [ref=e1383]: Camp stove (canister)
+            - generic [ref=e1384]: 0.8 lb
+          - listitem [ref=e1385] [cursor=pointer]:
+            - generic [ref=e1387]: Fuel canister (100g)
+            - generic [ref=e1388]: 0.5 lb
+          - listitem [ref=e1389] [cursor=pointer]:
+            - generic [ref=e1391]: Cook pot (0.9L)
+            - generic [ref=e1392]: 0.5 lb
+          - listitem [ref=e1393] [cursor=pointer]:
+            - generic [ref=e1395]: Utensil set
+            - generic [ref=e1396]: 0.2 lb
+          - listitem [ref=e1397] [cursor=pointer]:
+            - generic [ref=e1399]: Lightweight spork
+            - generic [ref=e1400]: 0.05 lb
+          - listitem [ref=e1401] [cursor=pointer]:
+            - generic [ref=e1403]: Freeze-dried meal
+            - generic [ref=e1404]: 0.5 lb
+          - listitem [ref=e1405] [cursor=pointer]:
+            - generic [ref=e1407]: Energy bars (box of 6)
+            - generic [ref=e1408]: 0.8 lb
+          - listitem [ref=e1409] [cursor=pointer]:
+            - generic [ref=e1411]: Trail mix (1 lb)
+            - generic [ref=e1412]: 1 lb
+          - listitem [ref=e1413] [cursor=pointer]:
+            - generic [ref=e1415]: Instant coffee (pack)
+            - generic [ref=e1416]: 0.1 lb
+          - listitem [ref=e1417] [cursor=pointer]:
+            - generic [ref=e1419]: Bear spray
+            - generic [ref=e1420]: 0.9 lb
+      - generic [ref=e1421]:
+        - generic [ref=e1422]: Footwear
+        - list [ref=e1423]:
+          - listitem [ref=e1424] [cursor=pointer]:
+            - generic [ref=e1426]: Hiking boots
+            - generic [ref=e1427]: 2.5 lb
+          - listitem [ref=e1428] [cursor=pointer]:
+            - generic [ref=e1430]: Trail runners
+            - generic [ref=e1431]: 1.8 lb
+          - listitem [ref=e1432] [cursor=pointer]:
+            - generic [ref=e1434]: Camp sandals
+            - generic [ref=e1435]: 0.9 lb
+          - listitem [ref=e1436] [cursor=pointer]:
+            - generic [ref=e1438]: Wading boots
+            - generic [ref=e1439]: 2.8 lb
+      - generic [ref=e1440]:
+        - generic [ref=e1441]: Gear
+        - list [ref=e1442]:
+          - listitem [ref=e1443] [cursor=pointer]:
+            - generic [ref=e1445]: Backpack (65L)
+            - generic [ref=e1446]: 4.5 lb
+          - listitem [ref=e1447] [cursor=pointer]:
+            - generic [ref=e1449]: Backpack (45L)
+            - generic [ref=e1450]: 3.5 lb
+          - listitem [ref=e1451] [cursor=pointer]:
+            - generic [ref=e1453]: Daypack (20L)
+            - generic [ref=e1454]: 1.5 lb
+          - listitem [ref=e1455] [cursor=pointer]:
+            - generic [ref=e1457]: Dry bags (set)
+            - generic [ref=e1458]: 0.5 lb
+          - listitem [ref=e1459] [cursor=pointer]:
+            - generic [ref=e1461]: Headlamp
+            - generic [ref=e1462]: 0.3 lb
+          - listitem [ref=e1463] [cursor=pointer]:
+            - generic [ref=e1465]: Lantern
+            - generic [ref=e1466]: 0.8 lb
+          - listitem [ref=e1467] [cursor=pointer]:
+            - generic [ref=e1469]: Trekking poles (pair)
+            - generic [ref=e1470]: 1 lb
+          - listitem [ref=e1471] [cursor=pointer]:
+            - generic [ref=e1473]: Bear canister
+            - generic [ref=e1474]: 2.8 lb
+          - listitem [ref=e1475] [cursor=pointer]:
+            - generic [ref=e1477]: Bear hang rope & bag
+            - generic [ref=e1478]: 0.5 lb
+          - listitem [ref=e1479] [cursor=pointer]:
+            - generic [ref=e1481]: Emergency blanket
+            - generic [ref=e1482]: 0.1 lb
+          - listitem [ref=e1483] [cursor=pointer]:
+            - generic [ref=e1485]: Paracord (50 ft)
+            - generic [ref=e1486]: 0.3 lb
+          - listitem [ref=e1487] [cursor=pointer]:
+            - generic [ref=e1489]: Multi-tool
+            - generic [ref=e1490]: 0.6 lb
+          - listitem [ref=e1491] [cursor=pointer]:
+            - generic [ref=e1493]: Fixed-blade knife
+            - generic [ref=e1494]: 0.5 lb
+          - listitem [ref=e1495] [cursor=pointer]:
+            - generic [ref=e1497]: Folding saw
+            - generic [ref=e1498]: 0.7 lb
+          - listitem [ref=e1499] [cursor=pointer]:
+            - generic [ref=e1501]: Hatchet
+            - generic [ref=e1502]: 1.8 lb
+          - listitem [ref=e1503] [cursor=pointer]:
+            - generic [ref=e1505]: Duct tape (small roll)
+            - generic [ref=e1506]: 0.2 lb
+      - generic [ref=e1507]:
+        - generic [ref=e1508]: Hunting
+        - list [ref=e1509]:
+          - listitem [ref=e1510] [cursor=pointer]:
+            - generic [ref=e1512]: Rifle
+            - generic [ref=e1513]: 7.5 lb
+          - listitem [ref=e1514] [cursor=pointer]:
+            - generic [ref=e1516]: Shotgun
+            - generic [ref=e1517]: 7 lb
+          - listitem [ref=e1518] [cursor=pointer]:
+            - generic [ref=e1520]: Muzzleloader
+            - generic [ref=e1521]: 8.5 lb
+          - listitem [ref=e1522] [cursor=pointer]:
+            - generic [ref=e1524]: Bow (compound)
+            - generic [ref=e1525]: 4 lb
+          - listitem [ref=e1526] [cursor=pointer]:
+            - generic [ref=e1528]: Crossbow
+            - generic [ref=e1529]: 7.5 lb
+          - listitem [ref=e1530] [cursor=pointer]:
+            - generic [ref=e1532]: Ammunition (box of 20)
+            - generic [ref=e1533]: 1.5 lb
+          - listitem [ref=e1534] [cursor=pointer]:
+            - generic [ref=e1536]: Shotgun shells (box of 25)
+            - generic [ref=e1537]: 2 lb
+          - listitem [ref=e1538] [cursor=pointer]:
+            - generic [ref=e1540]: Arrows (dozen)
+            - generic [ref=e1541]: 1.2 lb
+          - listitem [ref=e1542] [cursor=pointer]:
+            - generic [ref=e1544]: Hunting license
+          - listitem [ref=e1545] [cursor=pointer]:
+            - generic [ref=e1547]: Tags / harvest permit
+          - listitem [ref=e1548] [cursor=pointer]:
+            - generic [ref=e1550]: Binoculars (10x42)
+            - generic [ref=e1551]: 1.6 lb
+          - listitem [ref=e1552] [cursor=pointer]:
+            - generic [ref=e1554]: Rangefinder
+            - generic [ref=e1555]: 0.6 lb
+          - listitem [ref=e1556] [cursor=pointer]:
+            - generic [ref=e1558]: Spotting scope
+            - generic [ref=e1559]: 3.5 lb
+          - listitem [ref=e1560] [cursor=pointer]:
+            - generic [ref=e1562]: Spotting scope tripod
+            - generic [ref=e1563]: 2.5 lb
+          - listitem [ref=e1564] [cursor=pointer]:
+            - generic [ref=e1566]: Shooting sticks / bipod
+            - generic [ref=e1567]: 1.2 lb
+          - listitem [ref=e1568] [cursor=pointer]:
+            - generic [ref=e1570]: Elk calls (set)
+            - generic [ref=e1571]: 0.5 lb
+          - listitem [ref=e1572] [cursor=pointer]:
+            - generic [ref=e1574]: Deer calls (set)
+            - generic [ref=e1575]: 0.3 lb
+          - listitem [ref=e1576] [cursor=pointer]:
+            - generic [ref=e1578]: Predator calls
+            - generic [ref=e1579]: 0.3 lb
+          - listitem [ref=e1580] [cursor=pointer]:
+            - generic [ref=e1582]: Turkey calls
+            - generic [ref=e1583]: 0.4 lb
+          - listitem [ref=e1584] [cursor=pointer]:
+            - generic [ref=e1586]: Decoys
+            - generic [ref=e1587]: 2 lb
+          - listitem [ref=e1588] [cursor=pointer]:
+            - generic [ref=e1590]: Scent eliminator spray
+            - generic [ref=e1591]: 0.6 lb
+          - listitem [ref=e1592] [cursor=pointer]:
+            - generic [ref=e1594]: Scent wafers
+            - generic [ref=e1595]: 0.2 lb
+          - listitem [ref=e1596] [cursor=pointer]:
+            - generic [ref=e1598]: Orange vest
+            - generic [ref=e1599]: 0.5 lb
+          - listitem [ref=e1600] [cursor=pointer]:
+            - generic [ref=e1602]: Orange hat
+            - generic [ref=e1603]: 0.2 lb
+          - listitem [ref=e1604] [cursor=pointer]:
+            - generic [ref=e1606]: Tree stand
+            - generic [ref=e1607]: 18 lb
+          - listitem [ref=e1608] [cursor=pointer]:
+            - generic [ref=e1610]: Climbing sticks (set)
+            - generic [ref=e1611]: 8 lb
+          - listitem [ref=e1612] [cursor=pointer]:
+            - generic [ref=e1614]: Safety harness
+            - generic [ref=e1615]: 2.5 lb
+          - listitem [ref=e1616] [cursor=pointer]:
+            - generic [ref=e1618]: Ground blind
+            - generic [ref=e1619]: 12 lb
+          - listitem [ref=e1620] [cursor=pointer]:
+            - generic [ref=e1622]: Field dressing kit
+            - generic [ref=e1623]: 0.8 lb
+          - listitem [ref=e1624] [cursor=pointer]:
+            - generic [ref=e1626]: Game bags (set of 4)
+            - generic [ref=e1627]: 1.2 lb
+          - listitem [ref=e1628] [cursor=pointer]:
+            - generic [ref=e1630]: Meat pole / pack frame
+            - generic [ref=e1631]: 3 lb
+          - listitem [ref=e1632] [cursor=pointer]:
+            - generic [ref=e1634]: Disposable gloves
+            - generic [ref=e1635]: 0.1 lb
+          - listitem [ref=e1636] [cursor=pointer]:
+            - generic [ref=e1638]: Bone saw
+            - generic [ref=e1639]: 0.6 lb
+          - listitem [ref=e1640] [cursor=pointer]:
+            - generic [ref=e1642]: Headlamp (hunting)
+            - generic [ref=e1643]: 0.3 lb
+          - listitem [ref=e1644] [cursor=pointer]:
+            - generic [ref=e1646]: Trail cameras
+            - generic [ref=e1647]: 0.8 lb
+      - generic [ref=e1648]:
+        - generic [ref=e1649]: Hydration
+        - list [ref=e1650]:
+          - listitem [ref=e1651] [cursor=pointer]:
+            - generic [ref=e1653]: Water bottle (1L)
+            - generic [ref=e1654]: 0.3 lb
+          - listitem [ref=e1655] [cursor=pointer]:
+            - generic [ref=e1657]: Hydration bladder (2L)
+            - generic [ref=e1658]: 0.4 lb
+          - listitem [ref=e1659] [cursor=pointer]:
+            - generic [ref=e1661]: Water filter (Sawyer Squeeze)
+            - generic [ref=e1662]: 0.2 lb
+          - listitem [ref=e1663] [cursor=pointer]:
+            - generic [ref=e1665]: Water filter (Katadyn)
+            - generic [ref=e1666]: 1 lb
+          - listitem [ref=e1667] [cursor=pointer]:
+            - generic [ref=e1669]: Purification tablets
+            - generic [ref=e1670]: 0.1 lb
+          - listitem [ref=e1671] [cursor=pointer]:
+            - generic [ref=e1673]: UV purifier (Steripen)
+            - generic [ref=e1674]: 0.3 lb
+      - generic [ref=e1675]:
+        - generic [ref=e1676]: Navigation
+        - list [ref=e1677]:
+          - listitem [ref=e1678] [cursor=pointer]:
+            - generic [ref=e1680]: Topographic map
+            - generic [ref=e1681]: 0.1 lb
+          - listitem [ref=e1682] [cursor=pointer]:
+            - generic [ref=e1684]: Compass
+            - generic [ref=e1685]: 0.2 lb
+          - listitem [ref=e1686] [cursor=pointer]:
+            - generic [ref=e1688]: GPS device
+            - generic [ref=e1689]: 0.4 lb
+          - listitem [ref=e1690] [cursor=pointer]:
+            - generic [ref=e1692]: Satellite communicator (inReach)
+            - generic [ref=e1693]: 0.3 lb
+          - listitem [ref=e1694] [cursor=pointer]:
+            - generic [ref=e1696]: PLB
+            - generic [ref=e1697]: 0.3 lb
+      - generic [ref=e1698]:
+        - generic [ref=e1699]: Outerwear
+        - list [ref=e1700]:
+          - listitem [ref=e1701] [cursor=pointer]:
+            - generic [ref=e1703]: Rain jacket
+            - generic [ref=e1704]: 1 lb
+          - listitem [ref=e1705] [cursor=pointer]:
+            - generic [ref=e1707]: Fleece jacket
+            - generic [ref=e1708]: 1.2 lb
+          - listitem [ref=e1709] [cursor=pointer]:
+            - generic [ref=e1711]: Down jacket
+            - generic [ref=e1712]: 1.5 lb
+          - listitem [ref=e1713] [cursor=pointer]:
+            - generic [ref=e1715]: Softshell jacket
+            - generic [ref=e1716]: 1.3 lb
+          - listitem [ref=e1717] [cursor=pointer]:
+            - generic [ref=e1719]: Wind shirt
+            - generic [ref=e1720]: 0.5 lb
+          - listitem [ref=e1721] [cursor=pointer]:
+            - generic [ref=e1723]: Ski jacket
+            - generic [ref=e1724]: 2.5 lb
+          - listitem [ref=e1725] [cursor=pointer]:
+            - generic [ref=e1727]: Ski pants / bibs
+            - generic [ref=e1728]: 2 lb
+          - listitem [ref=e1729] [cursor=pointer]:
+            - generic [ref=e1731]: Beanie
+            - generic [ref=e1732]: 0.2 lb
+          - listitem [ref=e1733] [cursor=pointer]:
+            - generic [ref=e1735]: Balaclava
+            - generic [ref=e1736]: 0.2 lb
+          - listitem [ref=e1737] [cursor=pointer]:
+            - generic [ref=e1739]: Gloves (liner)
+            - generic [ref=e1740]: 0.2 lb
+          - listitem [ref=e1741] [cursor=pointer]:
+            - generic [ref=e1743]: Gloves (insulated)
+            - generic [ref=e1744]: 0.5 lb
+      - generic [ref=e1745]:
+        - generic [ref=e1746]: Shelter & Sleep
+        - list [ref=e1747]:
+          - listitem [ref=e1748] [cursor=pointer]:
+            - generic [ref=e1750]: Tent (2-person)
+            - generic [ref=e1751]: 4.5 lb
+          - listitem [ref=e1752] [cursor=pointer]:
+            - generic [ref=e1754]: Tent (1-person)
+            - generic [ref=e1755]: 2.8 lb
+          - listitem [ref=e1756] [cursor=pointer]:
+            - generic [ref=e1758]: Bivy sack
+            - generic [ref=e1759]: 1 lb
+          - listitem [ref=e1760] [cursor=pointer]:
+            - generic [ref=e1762]: Tarp (silnylon)
+            - generic [ref=e1763]: 1.2 lb
+          - listitem [ref=e1764] [cursor=pointer]:
+            - generic [ref=e1766]: Sleeping bag (20°F)
+            - generic [ref=e1767]: 3 lb
+          - listitem [ref=e1768] [cursor=pointer]:
+            - generic [ref=e1770]: Sleeping bag (0°F)
+            - generic [ref=e1771]: 4 lb
+          - listitem [ref=e1772] [cursor=pointer]:
+            - generic [ref=e1774]: Quilt (30°F)
+            - generic [ref=e1775]: 1.8 lb
+          - listitem [ref=e1776] [cursor=pointer]:
+            - generic [ref=e1778]: Sleeping pad (inflatable)
+            - generic [ref=e1779]: 1 lb
+          - listitem [ref=e1780] [cursor=pointer]:
+            - generic [ref=e1782]: Sleeping pad (foam)
+            - generic [ref=e1783]: 0.8 lb
+      - generic [ref=e1784]:
+        - generic [ref=e1785]: Toiletries
+        - list [ref=e1786]:
+          - listitem [ref=e1787] [cursor=pointer]:
+            - generic [ref=e1789]: Toothbrush & toothpastealready added
+            - generic [ref=e1790]: 0.3 lb
+          - listitem [ref=e1791] [cursor=pointer]:
+            - generic [ref=e1793]: Biodegradable soap
+            - generic [ref=e1794]: 0.5 lb
+          - listitem [ref=e1795] [cursor=pointer]:
+            - generic [ref=e1797]: Hand sanitizer
+            - generic [ref=e1798]: 0.3 lb
+          - listitem [ref=e1799] [cursor=pointer]:
+            - generic [ref=e1801]: Sunscreen SPF 50+already added
+            - generic [ref=e1802]: 0.5 lb
+          - listitem [ref=e1803] [cursor=pointer]:
+            - generic [ref=e1805]: Insect repellent (DEET)
+            - generic [ref=e1806]: 0.4 lb
+          - listitem [ref=e1807] [cursor=pointer]:
+            - generic [ref=e1809]: Lip balm with SPF
+            - generic [ref=e1810]: 0.1 lb
+          - listitem [ref=e1811] [cursor=pointer]:
+            - generic [ref=e1813]: Toilet paper
+            - generic [ref=e1814]: 0.3 lb
+          - listitem [ref=e1815] [cursor=pointer]:
+            - generic [ref=e1817]: Trowel (cat hole)
+            - generic [ref=e1818]: 0.2 lb
+          - listitem [ref=e1819] [cursor=pointer]:
+            - generic [ref=e1821]: Waste bags
+            - generic [ref=e1822]: 0.1 lb
+          - listitem [ref=e1823] [cursor=pointer]:
+            - generic [ref=e1825]: Deodorant
+            - generic [ref=e1826]: 0.3 lb
+          - listitem [ref=e1827] [cursor=pointer]:
+            - generic [ref=e1829]: Razor
+            - generic [ref=e1830]: 0.2 lb

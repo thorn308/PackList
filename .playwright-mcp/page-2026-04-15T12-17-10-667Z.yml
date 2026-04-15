@@ -1,0 +1,15 @@
+- generic [ref=e3]:
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - heading "My Trips" [level=1] [ref=e7]
+      - button "+ New Trip" [ref=e8]
+    - generic [ref=e9]:
+      - generic [ref=e10]: 🧳
+      - paragraph [ref=e11]: No trips yet.
+      - paragraph [ref=e12]:
+        - text: Tap
+        - strong [ref=e13]: + New Trip
+        - text: to get started.
+  - navigation [ref=e14]:
+    - button "🧳 Trips" [ref=e15]
+    - button "📋 Templates" [ref=e16]

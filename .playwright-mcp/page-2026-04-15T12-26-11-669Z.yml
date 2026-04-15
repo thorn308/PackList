@@ -1,0 +1,22 @@
+- generic [ref=e3]:
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - heading "My Trips" [level=1] [ref=e7]
+      - button "Cancel" [active] [ref=e17]
+    - generic [ref=e18]:
+      - heading "New Trip" [level=2] [ref=e19]
+      - generic [ref=e20]: Trip name *
+      - textbox "e.g. Summer Vacation" [ref=e21]
+      - generic [ref=e22]: Destination (optional)
+      - textbox "e.g. Miami, FL" [ref=e23]
+      - generic [ref=e24]: Start from template
+      - combobox [ref=e25]:
+        - option "— Blank list —" [selected]
+        - option "Beach Trip"
+        - option "Camping / Backpacking"
+        - option "Business Travel"
+        - option "Ski Trip"
+      - button "Create Trip" [disabled] [ref=e26]
+  - navigation [ref=e14]:
+    - button "🧳 Trips" [ref=e15]
+    - button "📋 Templates" [ref=e16]

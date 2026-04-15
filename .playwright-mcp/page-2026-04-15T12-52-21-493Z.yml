@@ -1,0 +1,18 @@
+- generic [ref=e3]:
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - heading "My Trips" [level=1] [ref=e7]
+      - button "+ New Trip" [ref=e8]
+    - generic [ref=e10] [cursor=pointer]:
+      - generic [ref=e11]:
+        - generic [ref=e12]:
+          - heading "Summer Beach Vacation" [level=3] [ref=e13]
+          - paragraph [ref=e14]: Miami, FL
+        - button "Delete trip" [ref=e15]: ×
+      - generic [ref=e18]:
+        - generic [ref=e19]: 0 of 17 packed
+        - generic [ref=e20]: 0%
+  - navigation [ref=e22]:
+    - button "⛺ Trips" [ref=e23]
+    - button "🗺️ Templates" [ref=e24]
+    - button "📦 Gear" [ref=e25]
