@@ -19,11 +19,20 @@ export function saveTrips(trips) {
 export function loadTemplates() {
   try {
     const stored = JSON.parse(localStorage.getItem(KEYS.templates))
-    if (stored) return stored
-    // Seed built-in templates on first load
-    const seeded = getDefaultTemplates()
-    saveTemplates(seeded)
-    return seeded
+    if (!stored) {
+      const seeded = getDefaultTemplates()
+      saveTemplates(seeded)
+      return seeded
+    }
+    // Merge in any default templates the user doesn't have yet (by name)
+    const storedNames = new Set(stored.map(t => t.name))
+    const missing = getDefaultTemplates().filter(t => !storedNames.has(t.name))
+    if (missing.length > 0) {
+      const merged = [...stored, ...missing]
+      saveTemplates(merged)
+      return merged
+    }
+    return stored
   } catch {
     return getDefaultTemplates()
   }
@@ -442,6 +451,72 @@ export function getDefaultTemplates() {
             { id: uid(), name: 'Lift tickets / ski pass', quantity: 1 },
             { id: uid(), name: 'ID / passport', quantity: 1 },
             { id: uid(), name: 'Lodging confirmation', quantity: 1 },
+          ],
+        },
+      ],
+    },
+    {
+      id: uid(),
+      name: 'Hunting Pack List',
+      categories: [
+        {
+          id: uid(),
+          name: 'Individual',
+          items: [
+            { id: uid(), name: 'Rifle', quantity: 1 },
+            { id: uid(), name: 'Ammo', quantity: 80 },
+            { id: uid(), name: 'Cleaning kit — plastic case', quantity: 1 },
+            { id: uid(), name: 'Cleaning kit — brush', quantity: 1 },
+            { id: uid(), name: 'Cleaning kit — oil', quantity: 1 },
+            { id: uid(), name: 'Cleaning kit — patches w/ rod', quantity: 1 },
+            { id: uid(), name: 'Cleaning kit — bore snake', quantity: 1 },
+            { id: uid(), name: 'Tool kit', quantity: 1 },
+          ],
+        },
+        {
+          id: uid(),
+          name: 'Pistol',
+          items: [
+            { id: uid(), name: 'Pistol ammo', quantity: 40 },
+            { id: uid(), name: 'Pistol cleaning kit', quantity: 1 },
+            { id: uid(), name: 'Bear spray', quantity: 1 },
+          ],
+        },
+        {
+          id: uid(),
+          name: 'In Camp',
+          items: [
+            { id: uid(), name: 'Camp chair', quantity: 1 },
+            { id: uid(), name: 'External battery (phone charger)', quantity: 1 },
+            { id: uid(), name: 'Air mattress', quantity: 1 },
+            { id: uid(), name: 'Sleeping bag / quilt', quantity: 1 },
+            { id: uid(), name: 'Pillow', quantity: 1 },
+            { id: uid(), name: 'Hygiene kit', quantity: 1 },
+            { id: uid(), name: 'Camp coffee cup (non-spill)', quantity: 1 },
+            { id: uid(), name: 'Camp water bottle', quantity: 1 },
+            { id: uid(), name: 'Extra batteries', quantity: 1 },
+            { id: uid(), name: 'Bug spray', quantity: 1 },
+          ],
+        },
+        {
+          id: uid(),
+          name: 'In Your Pack',
+          items: [
+            { id: uid(), name: 'Water / CamelBak / water bladder', quantity: 1 },
+            { id: uid(), name: 'Water filter / Steripen', quantity: 1 },
+            { id: uid(), name: '550 cord', quantity: 1 },
+            { id: uid(), name: 'Jet Boil / cook stove', quantity: 1 },
+            { id: uid(), name: 'Coffee cup or shaker bottle', quantity: 1 },
+            { id: uid(), name: 'Snacks / food', quantity: 1 },
+            { id: uid(), name: 'Ultima packets', quantity: 1 },
+            { id: uid(), name: 'Coffee packets', quantity: 1 },
+            { id: uid(), name: 'Spoon', quantity: 1 },
+            { id: uid(), name: 'Game bags (enough for whole animal)', quantity: 1 },
+            { id: uid(), name: 'Kill kit — 550 cord', quantity: 1 },
+            { id: uid(), name: 'Kill kit — plastic bag', quantity: 1 },
+            { id: uid(), name: 'Game knife w/ extra blades or sharpener', quantity: 1 },
+            { id: uid(), name: 'Headlamp (bright)', quantity: 1 },
+            { id: uid(), name: 'Lighter / fire kit', quantity: 1 },
           ],
         },
       ],
