@@ -551,14 +551,14 @@ export default function TripDetail({ trip, onBack, onUpdateTrip, gearItems = [] 
 
                           <button
                             onClick={() => startEditItem(item)}
-                            className="text-[#D6CFC2]/30 hover:text-[#D9A441] text-xs leading-none flex-shrink-0 transition-colors px-1"
+                            className="text-[#D6CFC2]/60 hover:text-[#D9A441] text-base leading-none flex-shrink-0 transition-colors px-1"
                             aria-label={`Edit ${item.name}`}
                           >
                             ✎
                           </button>
                           <button
                             onClick={() => deleteItem(item.id)}
-                            className="text-white/15 hover:text-red-400 text-lg leading-none flex-shrink-0 transition-colors"
+                            className="text-white/40 hover:text-red-400 text-xl leading-none flex-shrink-0 transition-colors"
                             aria-label={`Remove ${item.name}`}
                           >
                             ×
