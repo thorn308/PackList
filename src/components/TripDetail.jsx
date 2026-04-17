@@ -473,18 +473,20 @@ export default function TripDetail({ trip, onBack, onUpdateTrip, gearItems = [] 
                             <select
                               value={editItemCategory}
                               onChange={e => setEditItemCategory(e.target.value)}
-                              className={`${inputCls} flex-1`}
+                              className={`${inputCls} w-1/2`}
                             >
                               {trip.categories.map(c => <option key={c} value={c}>{c}</option>)}
                             </select>
-                            <input
-                              type="number"
-                              value={editItemQty}
-                              onChange={e => setEditItemQty(e.target.value)}
-                              min="1"
-                              placeholder="Qty"
-                              className={`${inputCls} w-16`}
-                            />
+                            <div className="relative w-1/2">
+                              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold text-[#D6CFC2]/40 pointer-events-none">QTY</span>
+                              <input
+                                type="number"
+                                value={editItemQty}
+                                onChange={e => setEditItemQty(e.target.value)}
+                                min="1"
+                                className={`${inputCls} w-full pl-10`}
+                              />
+                            </div>
                           </div>
                           <input
                             type="text"
