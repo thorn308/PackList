@@ -1,0 +1,17 @@
+{
+  "name": "PackList",
+  "short_name": "PackList",
+  "description": "Smart packing lists for any trip",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#2B2B2B",
+  "theme_color": "#2B2B2B",
+  "icons": [
+    {
+      "src": "./packicon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
