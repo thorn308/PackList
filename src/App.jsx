@@ -105,7 +105,6 @@ export default function App() {
   const [activeTab, setActiveTab] = useState(() => localStorage.getItem('packlist_tab') || 'Trips')
   const [selectedTripId, setSelectedTripId] = useState(null)
   const [editingTemplate, setEditingTemplate] = useState(null) // null | 'new' | template object
-  const [showMenu, setShowMenu] = useState(false)
   const [storageWarning, setStorageWarning] = useState(false)
   const [undoState, setUndoState] = useState(null)
   const undoTimer = useRef(null)
@@ -192,50 +191,6 @@ export default function App() {
           />
         ) : (
           <>
-            {/* Burger menu button */}
-            <div className="fixed right-4 z-30" style={{ top: 'calc(1rem + env(safe-area-inset-top, 0px))' }}>
-              <button
-                onClick={() => setShowMenu(v => !v)}
-                className="tap w-9 h-9 flex items-center justify-center bg-[#1C1C1C]/80 backdrop-blur-xl border border-white/10 rounded-full text-[#D6CFC2]/70 transition-all duration-300"
-                aria-label="Menu"
-              >
-                <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
-                  <rect y="0" width="16" height="1.5" rx="0.75" fill="currentColor"/>
-                  <rect y="5.25" width="16" height="1.5" rx="0.75" fill="currentColor"/>
-                  <rect y="10.5" width="16" height="1.5" rx="0.75" fill="currentColor"/>
-                </svg>
-              </button>
-              {showMenu && (
-                <>
-                  <div className="fixed inset-0 z-20" onClick={() => setShowMenu(false)} />
-                  <div className="absolute right-0 top-11 z-30 bg-[#1C1C1C]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl w-52 overflow-hidden">
-                    <p className="px-4 pt-3 pb-1.5 text-xs text-[#D6CFC2]/40 uppercase tracking-wide font-medium">Export</p>
-                    <button
-                      onClick={() => { exportTrips(trips); setShowMenu(false) }}
-                      disabled={trips.length === 0}
-                      className="tap w-full text-left px-4 py-3 text-sm text-[#F5F5F5] border-t border-white/8 hover:bg-white/5 transition-colors disabled:opacity-35"
-                    >
-                      <span className="mr-2">📋</span> Trips to CSV
-                    </button>
-                    <button
-                      onClick={() => { exportTemplates(templates); setShowMenu(false) }}
-                      disabled={templates.length === 0}
-                      className="tap w-full text-left px-4 py-3 text-sm text-[#F5F5F5] border-t border-white/8 hover:bg-white/5 transition-colors disabled:opacity-35"
-                    >
-                      <span className="mr-2">🗺️</span> Templates to CSV
-                    </button>
-                    <button
-                      onClick={() => { exportGear(gearItems); setShowMenu(false) }}
-                      disabled={gearItems.length === 0}
-                      className="tap w-full text-left px-4 py-3 text-sm text-[#F5F5F5] border-t border-white/8 hover:bg-white/5 transition-colors disabled:opacity-35"
-                    >
-                      <span className="mr-2">📦</span> Gear Library to CSV
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-
             <main style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom, 0px))' }}>
               {activeTab === 'Trips' && (
                 <Home
@@ -246,6 +201,9 @@ export default function App() {
                   onSelectTrip={setSelectedTripId}
                   tripForm={tripForm}
                   onTripFormChange={setTripForm}
+                  onExportTrips={() => exportTrips(trips)}
+                  onExportTemplates={() => exportTemplates(templates)}
+                  onExportGear={() => exportGear(gearItems)}
                 />
               )}
               {activeTab === 'Templates' && (

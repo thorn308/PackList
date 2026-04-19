@@ -7,9 +7,10 @@ const DEFAULT_CATEGORIES = [
   'Documents', 'Electronics', 'Food & Drink', 'Misc',
 ]
 
-export default function Home({ trips, templates, onSaveTrip, onDeleteTrip, onSelectTrip, tripForm, onTripFormChange }) {
+export default function Home({ trips, templates, onSaveTrip, onDeleteTrip, onSelectTrip, tripForm, onTripFormChange, onExportTrips, onExportTemplates, onExportGear }) {
   const { showForm, name, destination, templateId, nameTouched } = tripForm
   const [pendingDeleteId, setPendingDeleteId] = useState(null)
+  const [showMenu, setShowMenu] = useState(false)
 
   const sortedTrips = [...trips].sort((a, b) => {
     if (!a.createdAt && !b.createdAt) return 0
@@ -63,12 +64,54 @@ export default function Home({ trips, templates, onSaveTrip, onDeleteTrip, onSel
     <div className="max-w-lg mx-auto px-4" style={{ paddingTop: 'calc(3.5rem + env(safe-area-inset-top, 0px))', paddingBottom: 'calc(7rem + env(safe-area-inset-bottom, 0px))' }}>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-[32px] font-bold text-[#F5F5F5] tracking-tight leading-tight">My Trips</h1>
-        <button
-          onClick={() => onTripFormChange(p => ({ ...p, showForm: !p.showForm }))}
-          className="tap bg-[#D9A441] text-[#2B2B2B] font-semibold px-5 py-2 rounded-full text-sm transition-all duration-300"
-        >
-          {showForm ? 'Cancel' : '+ New Trip'}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => onTripFormChange(p => ({ ...p, showForm: !p.showForm }))}
+            className="tap bg-[#D9A441] text-[#2B2B2B] font-semibold px-5 py-2 rounded-full text-sm transition-all duration-300"
+          >
+            {showForm ? 'Cancel' : '+ New Trip'}
+          </button>
+          <div className="relative">
+            <button
+              onClick={() => setShowMenu(v => !v)}
+              className="tap w-9 h-9 flex items-center justify-center bg-white/[0.08] border border-white/10 rounded-full text-[#D6CFC2]/70 transition-all duration-300"
+              aria-label="Menu"
+            >
+              <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+                <rect y="0" width="16" height="1.5" rx="0.75" fill="currentColor"/>
+                <rect y="5.25" width="16" height="1.5" rx="0.75" fill="currentColor"/>
+                <rect y="10.5" width="16" height="1.5" rx="0.75" fill="currentColor"/>
+              </svg>
+            </button>
+            {showMenu && (
+              <>
+                <div className="fixed inset-0 z-20" onClick={() => setShowMenu(false)} />
+                <div className="absolute right-0 top-11 z-30 bg-[#1C1C1C]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl w-52 overflow-hidden">
+                  <p className="px-4 pt-3 pb-1.5 text-xs text-[#D6CFC2]/40 uppercase tracking-wide font-medium">Export</p>
+                  <button
+                    onClick={() => { onExportTrips(); setShowMenu(false) }}
+                    disabled={trips.length === 0}
+                    className="tap w-full text-left px-4 py-3 text-sm text-[#F5F5F5] border-t border-white/8 hover:bg-white/5 transition-colors disabled:opacity-35"
+                  >
+                    <span className="mr-2">📋</span> Trips to CSV
+                  </button>
+                  <button
+                    onClick={() => { onExportTemplates(); setShowMenu(false) }}
+                    className="tap w-full text-left px-4 py-3 text-sm text-[#F5F5F5] border-t border-white/8 hover:bg-white/5 transition-colors"
+                  >
+                    <span className="mr-2">🗺️</span> Templates to CSV
+                  </button>
+                  <button
+                    onClick={() => { onExportGear(); setShowMenu(false) }}
+                    className="tap w-full text-left px-4 py-3 text-sm text-[#F5F5F5] border-t border-white/8 hover:bg-white/5 transition-colors"
+                  >
+                    <span className="mr-2">📦</span> Gear Library to CSV
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
       </div>
 
       {showForm && (
@@ -124,7 +167,7 @@ export default function Home({ trips, templates, onSaveTrip, onDeleteTrip, onSel
         <div className="text-center py-28 text-[#D6CFC2]/50">
           <div className="text-5xl mb-4">⛺</div>
           <p className="text-base text-[#F5F5F5]/70">No trips yet.</p>
-          <p className="text-sm mt-1">Tap <strong className="text-[#D9A441]">+ New Trip</strong> to get started.</p>
+          <p className="text-sm mt-1">Tap <button onClick={() => onTripFormChange(p => ({ ...p, showForm: true }))} className="tap text-[#D9A441] font-bold">+ New Trip</button> to get started.</p>
         </div>
       )}
 
