@@ -9,7 +9,7 @@ const DEFAULT_CATEGORIES = [
   'Documents', 'Electronics', 'Food & Drink', 'Misc',
 ]
 
-const inputCls = 'w-full bg-white/[0.08] border border-white/15 rounded-xl px-3 py-2.5 text-sm text-[#F5F5F5] placeholder:text-[#D6CFC2]/35 focus:outline-none focus:ring-1 focus:ring-[#D9A441]/60'
+const inputCls = 'w-full bg-white/[0.08] border border-white/15 rounded-xl px-3 py-2.5 text-base text-[#F5F5F5] placeholder:text-[#D6CFC2]/35 focus:outline-none focus:ring-1 focus:ring-[#D9A441]/60'
 
 export default function TemplateEditor({ template, onSave, onCancel, gearItems = [] }) {
   const isNew = !template
@@ -75,6 +75,7 @@ export default function TemplateEditor({ template, onSave, onCancel, gearItems =
   }
 
   function renameCategory(catId, newName) {
+    if (!newName.trim()) return
     setCategories(prev => prev.map(c => c.id === catId ? { ...c, name: newName } : c))
   }
 
@@ -214,7 +215,7 @@ export default function TemplateEditor({ template, onSave, onCancel, gearItems =
                 type="text"
                 value={cat.name}
                 onChange={e => renameCategory(cat.id, e.target.value)}
-                className="flex-1 text-sm font-semibold text-[#F5F5F5] bg-transparent focus:outline-none border-b border-transparent focus:border-[#D9A441]/60"
+                className="flex-1 text-base font-semibold text-[#F5F5F5] bg-transparent focus:outline-none border-b border-transparent focus:border-[#D9A441]/60"
               />
               <span className="text-xs text-[#D6CFC2]/40">{cat.items.length}</span>
               <button
@@ -286,16 +287,19 @@ export default function TemplateEditor({ template, onSave, onCancel, gearItems =
                       if (e.key === 'Escape') setAddingItemFor(null)
                     }}
                     placeholder="Item name"
-                    className="flex-1 bg-white/[0.08] border border-white/15 rounded-lg px-2 py-1.5 text-sm text-[#F5F5F5] placeholder:text-[#D6CFC2]/35 focus:outline-none focus:ring-1 focus:ring-[#D9A441]/60"
+                    className="flex-1 bg-white/[0.08] border border-white/15 rounded-lg px-2 py-1.5 text-base text-[#F5F5F5] placeholder:text-[#D6CFC2]/35 focus:outline-none focus:ring-1 focus:ring-[#D9A441]/60"
                   />
                   <input
                     type="text"
                     value={newItemWeights[cat.id] || ''}
                     onChange={e => setNewItemWeights(prev => ({ ...prev, [cat.id]: e.target.value }))}
                     placeholder="e.g. 8 oz"
-                    className="w-24 bg-white/[0.08] border border-white/15 rounded-lg px-2 py-1.5 text-sm text-[#F5F5F5] placeholder:text-[#D6CFC2]/35 focus:outline-none focus:ring-1 focus:ring-[#D9A441]/60"
+                    className="w-24 bg-white/[0.08] border border-white/15 rounded-lg px-2 py-1.5 text-base text-[#F5F5F5] placeholder:text-[#D6CFC2]/35 focus:outline-none focus:ring-1 focus:ring-[#D9A441]/60"
                   />
                 </div>
+                {(newItemWeights[cat.id] || '').trim() && parseWeightInput(newItemWeights[cat.id]) === null && (
+                  <p className="text-xs text-red-400 px-1">Try "8 oz", "1.5 lb", or "500 g"</p>
+                )}
                 <div className="flex gap-2">
                   <button
                     onClick={() => addItem(cat.id)}

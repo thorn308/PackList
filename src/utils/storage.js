@@ -4,17 +4,88 @@ const KEYS = {
   gear: 'packlist_gear',
 }
 
+function normalizeItem(item) {
+  return {
+    id: item.id || uid(),
+    name: item.name || '',
+    category: item.category || 'Misc',
+    quantity: item.quantity ?? 1,
+    weight: item.weight ?? null,
+    checked: item.checked ?? false,
+  }
+}
+
+function normalizeTrip(trip) {
+  return {
+    destination: '',
+    templateId: null,
+    weightUnit: 'lb',
+    createdAt: new Date(0).toISOString(),
+    ...trip,
+    id: trip.id || uid(),
+    name: trip.name || 'Unnamed Trip',
+    items: (trip.items || []).map(normalizeItem),
+    categories: trip.categories?.length ? trip.categories : ['Misc'],
+  }
+}
+
+function normalizeTemplateItem(item) {
+  return {
+    id: item.id || uid(),
+    name: item.name || '',
+    quantity: item.quantity ?? 1,
+    weight: item.weight ?? null,
+  }
+}
+
+function normalizeTemplateCategory(cat) {
+  return {
+    id: cat.id || uid(),
+    name: cat.name || 'Misc',
+    items: (cat.items || []).map(normalizeTemplateItem),
+  }
+}
+
+function normalizeTemplate(tpl) {
+  return {
+    ...tpl,
+    id: tpl.id || uid(),
+    name: tpl.name || 'Unnamed Template',
+    categories: (tpl.categories || []).map(normalizeTemplateCategory),
+  }
+}
+
+function normalizeGearItem(item) {
+  return {
+    quantity: 1,
+    weight: null,
+    ...item,
+    id: item.id || uid(),
+    name: item.name || '',
+    category: item.category || 'Misc',
+  }
+}
+
 export function loadTrips() {
   try {
-    return JSON.parse(localStorage.getItem(KEYS.trips)) || []
+    const stored = JSON.parse(localStorage.getItem(KEYS.trips))
+    return (stored || []).map(normalizeTrip)
   } catch {
     return []
   }
 }
 
-export function saveTrips(trips) {
-  localStorage.setItem(KEYS.trips, JSON.stringify(trips))
+function safeSave(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value))
+  } catch (e) {
+    if (e instanceof DOMException && (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED')) {
+      window.dispatchEvent(new CustomEvent('storage-quota-exceeded'))
+    }
+  }
 }
+
+export function saveTrips(trips) { safeSave(KEYS.trips, trips) }
 
 export function loadTemplates() {
   try {
@@ -28,24 +99,22 @@ export function loadTemplates() {
     const storedNames = new Set(stored.map(t => t.name))
     const missing = getDefaultTemplates().filter(t => !storedNames.has(t.name))
     if (missing.length > 0) {
-      const merged = [...stored, ...missing]
+      const merged = [...stored, ...missing].map(normalizeTemplate)
       saveTemplates(merged)
       return merged
     }
-    return stored
+    return stored.map(normalizeTemplate)
   } catch {
     return getDefaultTemplates()
   }
 }
 
-export function saveTemplates(templates) {
-  localStorage.setItem(KEYS.templates, JSON.stringify(templates))
-}
+export function saveTemplates(templates) { safeSave(KEYS.templates, templates) }
 
 export function loadGearItems() {
   try {
     const stored = JSON.parse(localStorage.getItem(KEYS.gear))
-    if (stored) return stored
+    if (stored) return stored.map(normalizeGearItem)
     const seeded = getDefaultGearItems()
     saveGearItems(seeded)
     return seeded
@@ -54,9 +123,7 @@ export function loadGearItems() {
   }
 }
 
-export function saveGearItems(items) {
-  localStorage.setItem(KEYS.gear, JSON.stringify(items))
-}
+export function saveGearItems(items) { safeSave(KEYS.gear, items) }
 
 function uid() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2)

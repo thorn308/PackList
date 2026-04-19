@@ -1,9 +1,9 @@
-import { useState, useMemo, useRef } from 'react'
+import { useState, useMemo, useRef, useCallback } from 'react'
 import { uid } from '../utils/uid'
 import { parseGearFile } from '../utils/fileImport'
 import { parseWeightInput } from '../utils/weight'
 
-const inputCls = 'bg-white/[0.08] border border-white/15 rounded-xl px-3 py-2.5 text-sm text-[#F5F5F5] placeholder:text-[#D6CFC2]/35 focus:outline-none focus:ring-1 focus:ring-[#D9A441]/60'
+const inputCls = 'bg-white/[0.08] border border-white/15 rounded-xl px-3 py-2.5 text-base text-[#F5F5F5] placeholder:text-[#D6CFC2]/35 focus:outline-none focus:ring-1 focus:ring-[#D9A441]/60'
 
 export default function GearLibrary({ gearItems, onSaveGearItems }) {
   const [search, setSearch] = useState('')
@@ -26,6 +26,15 @@ export default function GearLibrary({ gearItems, onSaveGearItems }) {
   const [editQty, setEditQty] = useState('1')
 
   const [showFormatHelp, setShowFormatHelp] = useState(false)
+  const [pendingDeleteId, setPendingDeleteId] = useState(null)
+  const [undoState, setUndoState] = useState(null)
+  const undoTimer = useRef(null)
+
+  const showUndo = useCallback((message, onUndo) => {
+    clearTimeout(undoTimer.current)
+    setUndoState({ message, onUndo })
+    undoTimer.current = setTimeout(() => setUndoState(null), 5000)
+  }, [])
   const [quickAddCat, setQuickAddCat] = useState(null)
   const [quickName, setQuickName] = useState('')
   const [quickWeight, setQuickWeight] = useState('')
@@ -58,7 +67,7 @@ export default function GearLibrary({ gearItems, onSaveGearItems }) {
 
   function addItem() {
     if (!newName.trim()) return
-    const qty = Math.max(1, parseInt(newQty) || 1)
+    const qty = Math.max(1, Math.min(99, parseInt(newQty) || 1))
     onSaveGearItems([...gearItems, {
       id: uid(),
       name: newName.trim(),
@@ -82,7 +91,7 @@ export default function GearLibrary({ gearItems, onSaveGearItems }) {
   }
 
   function saveEdit(id) {
-    const qty = Math.max(1, parseInt(editQty) || 1)
+    const qty = Math.max(1, Math.min(99, parseInt(editQty) || 1))
     onSaveGearItems(gearItems.map(i =>
       i.id === id
         ? { ...i, name: editName.trim() || i.name, category: editCategory.trim() || i.category, weight: parseWeightInput(editWeight), quantity: qty }
@@ -92,12 +101,14 @@ export default function GearLibrary({ gearItems, onSaveGearItems }) {
   }
 
   function deleteItem(id) {
+    const deleted = gearItems.find(i => i.id === id)
     onSaveGearItems(gearItems.filter(i => i.id !== id))
+    if (deleted) showUndo(`"${deleted.name}" deleted`, () => onSaveGearItems(prev => [...prev, deleted]))
   }
 
   function quickAddItem(catName) {
     if (!quickName.trim()) return
-    const qty = Math.max(1, parseInt(quickQty) || 1)
+    const qty = Math.max(1, Math.min(99, parseInt(quickQty) || 1))
     onSaveGearItems([...gearItems, {
       id: uid(),
       name: quickName.trim(),
@@ -233,10 +244,14 @@ export default function GearLibrary({ gearItems, onSaveGearItems }) {
               value={newQty}
               onChange={e => setNewQty(e.target.value)}
               min="1"
+              max="99"
               placeholder="Qty"
               className={`${inputCls} w-16`}
             />
           </div>
+          {newWeight.trim() && parseWeightInput(newWeight) === null && (
+            <p className="text-xs text-red-400 mb-2 px-1">Try "8 oz", "1.5 lb", or "500 g"</p>
+          )}
           <button
             onClick={addItem}
             disabled={!newName.trim()}
@@ -383,6 +398,9 @@ export default function GearLibrary({ gearItems, onSaveGearItems }) {
                           className={`${inputCls} w-16`}
                         />
                       </div>
+                      {editWeight.trim() && parseWeightInput(editWeight) === null && (
+                        <p className="text-xs text-red-400 px-1">Try "8 oz", "1.5 lb", or "500 g"</p>
+                      )}
                       <div className="flex gap-2">
                         <button onClick={() => setEditingId(null)} className="tap flex-1 border border-white/15 text-[#D6CFC2]/60 py-1.5 rounded-full text-xs transition-all duration-300">Cancel</button>
                         <button onClick={() => saveEdit(item.id)} className="tap flex-1 bg-[#D9A441] text-[#2B2B2B] font-semibold py-1.5 rounded-full text-xs transition-all duration-300">Save</button>
@@ -406,15 +424,24 @@ export default function GearLibrary({ gearItems, onSaveGearItems }) {
                       <button
                         onClick={() => startEdit(item)}
                         className="tap text-xs text-[#D9A441] border border-[#D9A441]/30 rounded-full px-2.5 py-1 transition-all duration-300"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => deleteItem(item.id)}
-                        className="text-white/15 hover:text-red-400 text-lg leading-none transition-colors"
-                      >
-                        ×
-                      </button>
+                      >Edit</button>
+                      {pendingDeleteId === item.id ? (
+                        <div className="flex gap-1.5">
+                          <button
+                            onClick={() => setPendingDeleteId(null)}
+                            className="tap text-xs text-[#D6CFC2]/60 border border-white/15 rounded-full px-2 py-1 transition-all duration-300"
+                          >Cancel</button>
+                          <button
+                            onClick={() => { deleteItem(item.id); setPendingDeleteId(null) }}
+                            className="tap text-xs text-red-400 border border-red-400/30 rounded-full px-2 py-1 transition-all duration-300"
+                          >Delete</button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setPendingDeleteId(item.id)}
+                          className="text-white/15 hover:text-red-400 text-lg leading-none transition-colors"
+                        >×</button>
+                      )}
                     </div>
                   )}
                 </li>
@@ -423,6 +450,13 @@ export default function GearLibrary({ gearItems, onSaveGearItems }) {
           </div>
         ))}
       </div>
+
+      {undoState && (
+        <div className="fixed left-4 right-4 z-30 bg-[#1C1C1C]/95 backdrop-blur-xl border border-white/10 rounded-2xl px-4 py-3 flex items-center justify-between" style={{ bottom: 'calc(5rem + env(safe-area-inset-bottom, 0px))' }}>
+          <span className="text-sm text-[#F5F5F5]">{undoState.message}</span>
+          <button onClick={() => { undoState.onUndo(); clearTimeout(undoTimer.current); setUndoState(null) }} className="tap text-[#D9A441] font-semibold text-sm ml-4 flex-shrink-0">Undo</button>
+        </div>
+      )}
     </div>
   )
 }

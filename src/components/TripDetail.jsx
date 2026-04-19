@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { uid } from '../utils/uid'
 import ProgressBar from './ProgressBar'
 import GearPicker from './GearPicker'
@@ -14,29 +14,23 @@ function totalWeight(items) {
 }
 
 export default function TripDetail({ trip, onBack, onUpdateTrip, gearItems = [] }) {
-  const [newItemName, setNewItemName] = useState('')
-  const [newItemCategory, setNewItemCategory] = useState(trip.categories[0] || 'Misc')
-  const [newItemWeight, setNewItemWeight] = useState('')
+  // Grouped form states
+  const [newItem, setNewItem] = useState({ name: '', category: trip.categories[0] || 'Misc', weight: '' })
+  const [inlineAdd, setInlineAdd] = useState({ cat: null, name: '', weight: '', qty: '1' })
+  const [itemEdit, setItemEdit] = useState({ id: null, name: '', category: '', weight: '', qty: '1' })
+  const [weightEdit, setWeightEdit] = useState({ id: null, value: '' })
+  // Individual UI state
   const [newCategoryName, setNewCategoryName] = useState('')
   const [showAddItem, setShowAddItem] = useState(false)
   const [showAddCategory, setShowAddCategory] = useState(false)
   const [editingCategoryId, setEditingCategoryId] = useState(null)
-  const [editCategoryName, setEditCategoryName] = useState('')
   const [filter, setFilter] = useState('all')
   const [collapsed, setCollapsed] = useState(new Set())
   const [showMenu, setShowMenu] = useState(false)
-  const [editingWeightId, setEditingWeightId] = useState(null)
-  const [editWeightValue, setEditWeightValue] = useState('')
   const [showGearPicker, setShowGearPicker] = useState(false)
-  const [inlineAddCat, setInlineAddCat] = useState(null)
-  const [inlineName, setInlineName] = useState('')
-  const [inlineWeight, setInlineWeight] = useState('')
-  const [inlineQty, setInlineQty] = useState('1')
-  const [editingItemId, setEditingItemId] = useState(null)
-  const [editItemName, setEditItemName] = useState('')
-  const [editItemCategory, setEditItemCategory] = useState('')
-  const [editItemWeight, setEditItemWeight] = useState('')
-  const [editItemQty, setEditItemQty] = useState('1')
+  const [pendingDeleteCat, setPendingDeleteCat] = useState(null)
+  const [undoState, setUndoState] = useState(null)
+  const undoTimer = useRef(null)
 
   const weightUnit = trip.weightUnit || 'lb'
   const packed = trip.items.filter(i => i.checked).length
@@ -76,54 +70,58 @@ export default function TripDetail({ trip, onBack, onUpdateTrip, gearItems = [] 
   }
 
   function inlineAddItem(catName) {
-    if (!inlineName.trim()) return
-    const qty = Math.max(1, parseInt(inlineQty) || 1)
+    if (!inlineAdd.name.trim()) return
+    const qty = Math.max(1, Math.min(99, parseInt(inlineAdd.qty) || 1))
     onUpdateTrip({
       ...trip,
       items: [...trip.items, {
         id: uid(),
-        name: inlineName.trim(),
+        name: inlineAdd.name.trim(),
         category: catName,
         quantity: qty,
-        weight: parseWeightInput(inlineWeight),
+        weight: parseWeightInput(inlineAdd.weight),
         checked: false,
       }],
     })
-    setInlineName('')
-    setInlineWeight('')
-    setInlineQty('1')
-    setInlineAddCat(null)
+    setInlineAdd({ cat: null, name: '', weight: '', qty: '1' })
   }
 
   function startEditItem(item) {
-    setEditingItemId(item.id)
-    setEditItemName(item.name)
-    setEditItemCategory(item.category)
-    setEditItemWeight(item.weight != null ? formatWeight(item.weight, weightUnit) : '')
-    setEditItemQty(String(item.quantity || 1))
+    setItemEdit({
+      id: item.id,
+      name: item.name,
+      category: item.category,
+      weight: item.weight != null ? formatWeight(item.weight, weightUnit) : '',
+      qty: String(item.quantity || 1),
+    })
   }
 
   function saveEditItem(itemId) {
-    if (!editItemName.trim()) return
-    const qty = Math.max(1, parseInt(editItemQty) || 1)
+    if (!itemEdit.name.trim()) return
+    const qty = Math.max(1, Math.min(99, parseInt(itemEdit.qty) || 1))
     onUpdateTrip({
       ...trip,
       items: trip.items.map(i =>
         i.id === itemId
-          ? { ...i, name: editItemName.trim(), category: editItemCategory || i.category, weight: parseWeightInput(editItemWeight), quantity: qty }
+          ? { ...i, name: itemEdit.name.trim(), category: itemEdit.category || i.category, weight: parseWeightInput(itemEdit.weight), quantity: qty }
           : i
       ),
     })
-    setEditingItemId(null)
+    setItemEdit(p => ({ ...p, id: null }))
   }
 
   function saveItemWeight(itemId, rawValue) {
+    // invalid non-empty input — discard without wiping the stored weight
+    if (rawValue.trim() && parseWeightInput(rawValue) === null) {
+      setWeightEdit(p => ({ ...p, id: null }))
+      return
+    }
     const weight = parseWeightInput(rawValue)
     onUpdateTrip({
       ...trip,
       items: trip.items.map(i => i.id === itemId ? { ...i, weight } : i),
     })
-    setEditingWeightId(null)
+    setWeightEdit(p => ({ ...p, id: null }))
   }
 
   function addFromLibrary(gearSelections) {
@@ -140,18 +138,17 @@ export default function TripDetail({ trip, onBack, onUpdateTrip, gearItems = [] 
   }
 
   function addItem() {
-    if (!newItemName.trim()) return
+    if (!newItem.name.trim()) return
     const item = {
       id: uid(),
-      name: newItemName.trim(),
-      category: newItemCategory,
+      name: newItem.name.trim(),
+      category: newItem.category,
       quantity: 1,
-      weight: parseWeightInput(newItemWeight),
+      weight: parseWeightInput(newItem.weight),
       checked: false,
     }
     onUpdateTrip({ ...trip, items: [...trip.items, item] })
-    setNewItemName('')
-    setNewItemWeight('')
+    setNewItem(p => ({ ...p, name: '', weight: '' }))
     setShowAddItem(false)
   }
 
@@ -178,11 +175,19 @@ export default function TripDetail({ trip, onBack, onUpdateTrip, gearItems = [] 
   }
 
   function deleteCategory(catName) {
+    const snapshot = { categories: trip.categories, items: trip.items }
+    const deletedItems = trip.items.filter(i => i.category === catName)
     onUpdateTrip({
       ...trip,
       categories: trip.categories.filter(c => c !== catName),
       items: trip.items.filter(i => i.category !== catName),
     })
+    clearTimeout(undoTimer.current)
+    setUndoState({
+      message: `"${catName}" and ${deletedItems.length} item${deletedItems.length !== 1 ? 's' : ''} deleted`,
+      onUndo: () => onUpdateTrip({ ...trip, categories: snapshot.categories, items: snapshot.items }),
+    })
+    undoTimer.current = setTimeout(() => setUndoState(null), 5000)
   }
 
   function uncheckAll() {
@@ -209,10 +214,10 @@ export default function TripDetail({ trip, onBack, onUpdateTrip, gearItems = [] 
     return items
   }
 
-  const inputCls = 'w-full bg-white/[0.08] border border-white/15 rounded-xl px-3 py-2.5 text-sm text-[#F5F5F5] placeholder:text-[#D6CFC2]/35 focus:outline-none focus:ring-1 focus:ring-[#D9A441]/60'
+  const inputCls = 'w-full bg-white/[0.08] border border-white/15 rounded-xl px-3 py-2.5 text-base text-[#F5F5F5] placeholder:text-[#D6CFC2]/35 focus:outline-none focus:ring-1 focus:ring-[#D9A441]/60'
 
   return (
-    <div className="max-w-lg mx-auto px-4 py-4 pb-28">
+    <div className="max-w-lg mx-auto px-4" style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top, 0px))', paddingBottom: 'calc(7rem + env(safe-area-inset-bottom, 0px))' }}>
       {/* Header */}
       <div className="flex items-center gap-3 mb-5">
         <button onClick={onBack} className="tap text-[#D9A441] text-sm font-medium transition-all duration-300">← Trips</button>
@@ -321,29 +326,32 @@ export default function TripDetail({ trip, onBack, onUpdateTrip, gearItems = [] 
           <h3 className="text-sm font-semibold text-[#F5F5F5] mb-3">Add Item</h3>
           <input
             type="text"
-            value={newItemName}
-            onChange={e => setNewItemName(e.target.value)}
+            value={newItem.name}
+            onChange={e => setNewItem(p => ({ ...p, name: e.target.value }))}
             placeholder="Item name"
             className={`${inputCls} mb-2`}
             autoFocus
           />
           <select
-            value={newItemCategory}
-            onChange={e => setNewItemCategory(e.target.value)}
+            value={newItem.category}
+            onChange={e => setNewItem(p => ({ ...p, category: e.target.value }))}
             className={`${inputCls} mb-2`}
           >
             {trip.categories.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
-          <div className="flex gap-2 mb-3">
+          <div className="flex gap-2">
             <input
               type="text"
-              value={newItemWeight}
-              onChange={e => setNewItemWeight(e.target.value)}
+              value={newItem.weight}
+              onChange={e => setNewItem(p => ({ ...p, weight: e.target.value }))}
               placeholder="e.g. 24 oz, 1 lb 4 oz, 680 g"
-              className="flex-1 bg-white/[0.08] border border-white/15 rounded-xl px-3 py-2.5 text-sm text-[#F5F5F5] placeholder:text-[#D6CFC2]/35 focus:outline-none focus:ring-1 focus:ring-[#D9A441]/60"
+              className="flex-1 bg-white/[0.08] border border-white/15 rounded-xl px-3 py-2.5 text-base text-[#F5F5F5] placeholder:text-[#D6CFC2]/35 focus:outline-none focus:ring-1 focus:ring-[#D9A441]/60"
             />
           </div>
-          <div className="flex gap-2">
+          {newItem.weight.trim() && parseWeightInput(newItem.weight) === null && (
+            <p className="text-xs text-red-400 mb-2 px-1">Try "8 oz", "1.5 lb", or "500 g"</p>
+          )}
+          <div className="flex gap-2 mt-2">
             <button
               onClick={() => setShowAddItem(false)}
               className="tap flex-1 py-2.5 border border-white/15 text-[#D6CFC2]/70 rounded-full text-sm transition-all duration-300"
@@ -352,7 +360,7 @@ export default function TripDetail({ trip, onBack, onUpdateTrip, gearItems = [] 
             </button>
             <button
               onClick={addItem}
-              disabled={!newItemName.trim()}
+              disabled={!newItem.name.trim()}
               className="tap flex-1 py-2.5 bg-[#D9A441] text-[#2B2B2B] font-semibold rounded-full text-sm disabled:opacity-40 transition-all duration-300"
             >
               Add
@@ -413,6 +421,7 @@ export default function TripDetail({ trip, onBack, onUpdateTrip, gearItems = [] 
                   onClick={() => toggleCollapsed(cat)}
                   className="flex items-center gap-2 flex-1 text-left min-w-0"
                   aria-label={isCollapsed ? `Expand ${cat}` : `Collapse ${cat}`}
+                  aria-expanded={!isCollapsed}
                 >
                   <span className={`text-xs transition-transform duration-200 text-[#D6CFC2]/40 ${isCollapsed ? '' : 'rotate-90'}`}>
                     ▶
@@ -427,11 +436,11 @@ export default function TripDetail({ trip, onBack, onUpdateTrip, gearItems = [] 
                         if (e.key === 'Enter') renameCategory(cat, e.target.value)
                         if (e.key === 'Escape') setEditingCategoryId(null)
                       }}
-                      className="flex-1 bg-white/10 border border-[#D9A441]/60 rounded-lg px-2 py-0.5 text-sm text-[#F5F5F5] mr-2 focus:outline-none"
+                      className="flex-1 bg-white/10 border border-[#D9A441]/60 rounded-lg px-2 py-0.5 text-base text-[#F5F5F5] mr-2 focus:outline-none"
                     />
                   ) : (
                     <span
-                      onDoubleClick={e => { e.stopPropagation(); setEditingCategoryId(cat); setEditCategoryName(cat) }}
+                      onDoubleClick={e => { e.stopPropagation(); setEditingCategoryId(cat) }}
                       className={`text-sm font-semibold truncate ${allPacked ? 'text-[#D9A441]' : 'text-[#F5F5F5]'}`}
                     >
                       {cat}
@@ -441,13 +450,31 @@ export default function TripDetail({ trip, onBack, onUpdateTrip, gearItems = [] 
                 </button>
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <span className="text-xs text-[#D6CFC2]/40">{catPacked}/{items.length}</span>
-                  <button
-                    onClick={() => deleteCategory(cat)}
-                    className="text-white/20 hover:text-red-400 text-lg leading-none transition-colors"
-                    aria-label={`Delete ${cat} category`}
-                  >
-                    ×
-                  </button>
+                  {editingCategoryId !== cat && (
+                    <button
+                      onClick={e => { e.stopPropagation(); setEditingCategoryId(cat) }}
+                      className="text-white/20 hover:text-[#D9A441] text-sm leading-none transition-colors"
+                      aria-label={`Rename ${cat} category`}
+                    >✎</button>
+                  )}
+                  {pendingDeleteCat === cat ? (
+                    <div className="flex gap-1.5">
+                      <button
+                        onClick={() => setPendingDeleteCat(null)}
+                        className="tap text-xs text-[#D6CFC2]/60 border border-white/15 rounded-full px-2 py-0.5 transition-all duration-300"
+                      >Cancel</button>
+                      <button
+                        onClick={() => { deleteCategory(cat); setPendingDeleteCat(null) }}
+                        className="tap text-xs text-red-400 border border-red-400/30 rounded-full px-2 py-0.5 transition-all duration-300"
+                      >Delete</button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setPendingDeleteCat(cat)}
+                      className="text-white/20 hover:text-red-400 text-lg leading-none transition-colors"
+                      aria-label={`Delete ${cat} category`}
+                    >×</button>
+                  )}
                 </div>
               </div>
 
@@ -458,21 +485,21 @@ export default function TripDetail({ trip, onBack, onUpdateTrip, gearItems = [] 
                       key={item.id}
                       className={`px-4 py-3 ${idx < visible.length - 1 ? 'border-b border-white/5' : ''}`}
                     >
-                      {editingItemId === item.id ? (
+                      {itemEdit.id === item.id ? (
                         <div className="space-y-2">
                           <input
                             type="text"
                             autoFocus
-                            value={editItemName}
-                            onChange={e => setEditItemName(e.target.value)}
-                            onKeyDown={e => { if (e.key === 'Enter') saveEditItem(item.id); if (e.key === 'Escape') setEditingItemId(null) }}
+                            value={itemEdit.name}
+                            onChange={e => setItemEdit(p => ({ ...p, name: e.target.value }))}
+                            onKeyDown={e => { if (e.key === 'Enter') saveEditItem(item.id); if (e.key === 'Escape') setItemEdit(p => ({ ...p, id: null })) }}
                             placeholder="Item name"
                             className={`${inputCls} w-full`}
                           />
                           <div className="flex gap-2">
                             <select
-                              value={editItemCategory}
-                              onChange={e => setEditItemCategory(e.target.value)}
+                              value={itemEdit.category}
+                              onChange={e => setItemEdit(p => ({ ...p, category: e.target.value }))}
                               className={`${inputCls} w-1/2`}
                             >
                               {trip.categories.map(c => <option key={c} value={c}>{c}</option>)}
@@ -481,30 +508,37 @@ export default function TripDetail({ trip, onBack, onUpdateTrip, gearItems = [] 
                               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold text-[#D6CFC2]/40 pointer-events-none">QTY</span>
                               <input
                                 type="number"
-                                value={editItemQty}
-                                onChange={e => setEditItemQty(e.target.value)}
+                                value={itemEdit.qty}
+                                onChange={e => setItemEdit(p => ({ ...p, qty: e.target.value }))}
                                 min="1"
+                                max="99"
                                 className={`${inputCls} w-full pl-10`}
                               />
                             </div>
                           </div>
                           <input
                             type="text"
-                            value={editItemWeight}
-                            onChange={e => setEditItemWeight(e.target.value)}
+                            value={itemEdit.weight}
+                            onChange={e => setItemEdit(p => ({ ...p, weight: e.target.value }))}
                             placeholder="e.g. 24 oz, 1 lb 4 oz"
                             className={`${inputCls} w-full`}
                           />
+                          {itemEdit.weight.trim() && parseWeightInput(itemEdit.weight) === null && (
+                            <p className="text-xs text-red-400 -mt-1 px-1">Try "8 oz", "1.5 lb", or "500 g"</p>
+                          )}
                           <div className="flex gap-2">
-                            <button onClick={() => setEditingItemId(null)} className="tap flex-1 border border-white/15 text-[#D6CFC2]/60 py-1.5 rounded-full text-xs transition-all duration-300">Cancel</button>
-                            <button onClick={() => saveEditItem(item.id)} disabled={!editItemName.trim()} className="tap flex-1 bg-[#D9A441] text-[#2B2B2B] font-semibold py-1.5 rounded-full text-xs disabled:opacity-40 transition-all duration-300">Save</button>
+                            <button onClick={() => setItemEdit(p => ({ ...p, id: null }))} className="tap flex-1 border border-white/15 text-[#D6CFC2]/60 py-1.5 rounded-full text-xs transition-all duration-300">Cancel</button>
+                            <button onClick={() => saveEditItem(item.id)} disabled={!itemEdit.name.trim()} className="tap flex-1 bg-[#D9A441] text-[#2B2B2B] font-semibold py-1.5 rounded-full text-xs disabled:opacity-40 transition-all duration-300">Save</button>
                           </div>
                         </div>
                       ) : (
                         <div className="flex items-center gap-3">
                           <button
                             onClick={() => toggleItem(item.id)}
-                            className={`w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all duration-300 ${
+                            role="checkbox"
+                            aria-checked={item.checked}
+                            aria-label={item.checked ? `Uncheck ${item.name}` : `Check ${item.name}`}
+                            className={`w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D9A441] ${
                               item.checked ? 'bg-[#D9A441] border-[#D9A441]' : 'border-white/25'
                             }`}
                           >
@@ -520,28 +554,25 @@ export default function TripDetail({ trip, onBack, onUpdateTrip, gearItems = [] 
                               {item.name}
                               {item.quantity > 1 && <span className="text-[#D6CFC2]/40 ml-1">×{item.quantity}</span>}
                             </span>
-                            {editingWeightId === item.id ? (
+                            {weightEdit.id === item.id ? (
                               <div className="flex items-center gap-1 mt-1">
                                 <input
                                   type="text"
                                   autoFocus
-                                  value={editWeightValue}
-                                  onChange={e => setEditWeightValue(e.target.value)}
-                                  onBlur={() => saveItemWeight(item.id, editWeightValue)}
+                                  value={weightEdit.value}
+                                  onChange={e => setWeightEdit(p => ({ ...p, value: e.target.value }))}
+                                  onBlur={() => saveItemWeight(item.id, weightEdit.value)}
                                   onKeyDown={e => {
-                                    if (e.key === 'Enter') saveItemWeight(item.id, editWeightValue)
-                                    if (e.key === 'Escape') setEditingWeightId(null)
+                                    if (e.key === 'Enter') saveItemWeight(item.id, weightEdit.value)
+                                    if (e.key === 'Escape') setWeightEdit(p => ({ ...p, id: null }))
                                   }}
                                   placeholder="e.g. 24 oz"
-                                  className="w-28 bg-white/10 border border-[#D9A441]/60 rounded-lg px-1.5 py-0.5 text-xs text-[#F5F5F5] focus:outline-none"
+                                  className={`w-28 bg-white/10 border rounded-lg px-1.5 py-0.5 text-base text-[#F5F5F5] focus:outline-none ${weightEdit.value.trim() && parseWeightInput(weightEdit.value) === null ? 'border-red-400/60' : 'border-[#D9A441]/60'}`}
                                 />
                               </div>
                             ) : (
                               <button
-                                onClick={() => {
-                                  setEditingWeightId(item.id)
-                                  setEditWeightValue(item.weight != null ? formatWeight(item.weight, weightUnit) : '')
-                                }}
+                                onClick={() => setWeightEdit({ id: item.id, value: item.weight != null ? formatWeight(item.weight, weightUnit) : '' })}
                                 className="block text-xs text-[#D6CFC2]/40 hover:text-[#D9A441] mt-0.5 transition-colors"
                               >
                                 {item.weight ? formatWeight(item.weight * (item.quantity || 1), weightUnit) : '+ weight'}
@@ -572,44 +603,48 @@ export default function TripDetail({ trip, onBack, onUpdateTrip, gearItems = [] 
 
               {/* Per-category inline add */}
               {!isCollapsed && (
-                inlineAddCat === cat ? (
+                inlineAdd.cat === cat ? (
                   <div className="px-3 py-2.5 border-t border-white/8 space-y-2">
                     <input
                       type="text"
                       autoFocus
-                      value={inlineName}
-                      onChange={e => setInlineName(e.target.value)}
-                      onKeyDown={e => { if (e.key === 'Enter') inlineAddItem(cat); if (e.key === 'Escape') setInlineAddCat(null) }}
+                      value={inlineAdd.name}
+                      onChange={e => setInlineAdd(p => ({ ...p, name: e.target.value }))}
+                      onKeyDown={e => { if (e.key === 'Enter') inlineAddItem(cat); if (e.key === 'Escape') setInlineAdd(p => ({ ...p, cat: null })) }}
                       placeholder="Item name"
                       className={`${inputCls} w-full`}
                     />
                     <div className="flex gap-2">
                       <input
                         type="text"
-                        value={inlineWeight}
-                        onChange={e => setInlineWeight(e.target.value)}
-                        onKeyDown={e => { if (e.key === 'Enter') inlineAddItem(cat); if (e.key === 'Escape') setInlineAddCat(null) }}
+                        value={inlineAdd.weight}
+                        onChange={e => setInlineAdd(p => ({ ...p, weight: e.target.value }))}
+                        onKeyDown={e => { if (e.key === 'Enter') inlineAddItem(cat); if (e.key === 'Escape') setInlineAdd(p => ({ ...p, cat: null })) }}
                         placeholder="e.g. 8 oz"
                         className={`${inputCls} flex-1`}
                       />
                       <input
                         type="number"
-                        value={inlineQty}
-                        onChange={e => setInlineQty(e.target.value)}
+                        value={inlineAdd.qty}
+                        onChange={e => setInlineAdd(p => ({ ...p, qty: e.target.value }))}
                         min="1"
+                        max="99"
                         placeholder="Qty"
                         className={`${inputCls} w-16`}
                       />
                     </div>
+                    {inlineAdd.weight.trim() && parseWeightInput(inlineAdd.weight) === null && (
+                      <p className="text-xs text-red-400 px-1">Try "8 oz", "1.5 lb", or "500 g"</p>
+                    )}
                     <div className="flex gap-2">
-                      <button onClick={() => setInlineAddCat(null)} className="tap flex-1 border border-white/15 text-[#D6CFC2]/60 py-1.5 rounded-full text-xs transition-all duration-300">Cancel</button>
-                      <button onClick={() => inlineAddItem(cat)} disabled={!inlineName.trim()} className="tap flex-1 bg-[#D9A441] text-[#2B2B2B] font-semibold py-1.5 rounded-full text-xs disabled:opacity-40 transition-all duration-300">Add</button>
+                      <button onClick={() => setInlineAdd(p => ({ ...p, cat: null }))} className="tap flex-1 border border-white/15 text-[#D6CFC2]/60 py-1.5 rounded-full text-xs transition-all duration-300">Cancel</button>
+                      <button onClick={() => inlineAddItem(cat)} disabled={!inlineAdd.name.trim()} className="tap flex-1 bg-[#D9A441] text-[#2B2B2B] font-semibold py-1.5 rounded-full text-xs disabled:opacity-40 transition-all duration-300">Add</button>
                     </div>
                   </div>
                 ) : (
                   <div className="flex border-t border-white/8">
                     <button
-                      onClick={() => { setInlineAddCat(cat); setInlineName(''); setInlineWeight(''); setInlineQty('1') }}
+                      onClick={() => setInlineAdd({ cat, name: '', weight: '', qty: '1' })}
                       className="tap flex-1 text-xs text-[#D9A441] py-2 px-3 text-left transition-colors"
                     >
                       + Custom item
@@ -628,8 +663,16 @@ export default function TripDetail({ trip, onBack, onUpdateTrip, gearItems = [] 
         })}
       </div>
 
+      {/* Undo toast */}
+      {undoState && (
+        <div className="fixed left-4 right-4 z-30 bg-[#1C1C1C]/95 backdrop-blur-xl border border-white/10 rounded-2xl px-4 py-3 flex items-center justify-between" style={{ bottom: 'calc(5rem + env(safe-area-inset-bottom, 0px))' }}>
+          <span className="text-sm text-[#F5F5F5]">{undoState.message}</span>
+          <button onClick={() => { undoState.onUndo(); clearTimeout(undoTimer.current); setUndoState(null) }} className="tap text-[#D9A441] font-semibold text-sm ml-4 flex-shrink-0">Undo</button>
+        </div>
+      )}
+
       {/* Fixed bottom action bar */}
-      <div className="fixed bottom-4 left-4 right-4 bg-[#1C1C1C]/90 backdrop-blur-xl border border-white/10 rounded-2xl px-3 py-2.5 flex gap-2 z-20">
+      <div className="fixed left-4 right-4 bg-[#1C1C1C]/90 backdrop-blur-xl border border-white/10 rounded-2xl px-3 py-2.5 flex gap-2 z-20" style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom, 0px))' }}>
         <button
           onClick={() => { setShowAddItem(v => !v); setShowAddCategory(false) }}
           className="tap flex-1 bg-[#D9A441] text-[#2B2B2B] font-semibold py-2.5 rounded-xl text-sm transition-all duration-300"

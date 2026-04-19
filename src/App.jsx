@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback, lazy, Suspense } from 'react'
 import { loadTrips, saveTrips, loadTemplates, saveTemplates, loadGearItems, saveGearItems } from './utils/storage'
 import Home from './components/Home'
 import TripDetail from './components/TripDetail'
-import Templates from './components/Templates'
-import TemplateEditor from './components/TemplateEditor'
-import GearLibrary from './components/GearLibrary'
+const Templates = lazy(() => import('./components/Templates'))
+const TemplateEditor = lazy(() => import('./components/TemplateEditor'))
+const GearLibrary = lazy(() => import('./components/GearLibrary'))
 
 const TABS = [
   { id: 'Trips', label: '⛺ Trips' },
@@ -106,10 +106,26 @@ export default function App() {
   const [selectedTripId, setSelectedTripId] = useState(null)
   const [editingTemplate, setEditingTemplate] = useState(null) // null | 'new' | template object
   const [showMenu, setShowMenu] = useState(false)
+  const [storageWarning, setStorageWarning] = useState(false)
+  const [undoState, setUndoState] = useState(null)
+  const undoTimer = useRef(null)
+  const [tripForm, setTripForm] = useState({ showForm: false, name: '', destination: '', templateId: '', nameTouched: false })
+
+  const showUndo = useCallback((message, onUndo) => {
+    clearTimeout(undoTimer.current)
+    setUndoState({ message, onUndo })
+    undoTimer.current = setTimeout(() => setUndoState(null), 5000)
+  }, [])
 
   useEffect(() => { saveTrips(trips) }, [trips])
   useEffect(() => { saveTemplates(templates) }, [templates])
   useEffect(() => { saveGearItems(gearItems) }, [gearItems])
+
+  useEffect(() => {
+    const handler = () => setStorageWarning(true)
+    window.addEventListener('storage-quota-exceeded', handler)
+    return () => window.removeEventListener('storage-quota-exceeded', handler)
+  }, [])
 
   function handleSaveTrip(trip) {
     setTrips(prev => {
@@ -121,8 +137,10 @@ export default function App() {
   }
 
   function handleDeleteTrip(id) {
+    const deleted = trips.find(t => t.id === id)
     setTrips(prev => prev.filter(t => t.id !== id))
     if (selectedTripId === id) setSelectedTripId(null)
+    if (deleted) showUndo(`"${deleted.name}" deleted`, () => setTrips(prev => [...prev, deleted]))
   }
 
   function handleUpdateTrip(trip) {
@@ -139,16 +157,25 @@ export default function App() {
   }
 
   function handleDeleteTemplate(id) {
+    const deleted = templates.find(t => t.id === id)
     setTemplates(prev => prev.filter(t => t.id !== id))
+    if (deleted) showUndo(`"${deleted.name}" deleted`, () => setTemplates(prev => [...prev, deleted]))
   }
 
   const selectedTrip = trips.find(t => t.id === selectedTripId) || null
 
   return (
     <div className="min-h-screen bg-[#2B2B2B] relative">
+      {storageWarning && (
+        <div className="fixed top-0 left-0 right-0 z-50 bg-red-500/90 backdrop-blur-sm text-white text-sm px-4 py-3 flex items-center justify-between" style={{ paddingTop: 'calc(0.75rem + env(safe-area-inset-top, 0px))' }}>
+          <span>Storage full — some changes may not have saved. Free up space by exporting and deleting old trips.</span>
+          <button onClick={() => setStorageWarning(false)} className="ml-4 text-white/70 hover:text-white flex-shrink-0">×</button>
+        </div>
+      )}
       <TopoBackground />
 
       <div className="relative z-10">
+        <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="w-6 h-6 rounded-full border-2 border-[#D9A441] border-t-transparent animate-spin" /></div>}>
         {selectedTrip ? (
           <TripDetail
             trip={selectedTrip}
@@ -166,7 +193,7 @@ export default function App() {
         ) : (
           <>
             {/* Burger menu button */}
-            <div className="fixed top-4 right-4 z-30">
+            <div className="fixed right-4 z-30" style={{ top: 'calc(1rem + env(safe-area-inset-top, 0px))' }}>
               <button
                 onClick={() => setShowMenu(v => !v)}
                 className="tap w-9 h-9 flex items-center justify-center bg-[#1C1C1C]/80 backdrop-blur-xl border border-white/10 rounded-full text-[#D6CFC2]/70 transition-all duration-300"
@@ -209,7 +236,7 @@ export default function App() {
               )}
             </div>
 
-            <div className="pb-28">
+            <main style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom, 0px))' }}>
               {activeTab === 'Trips' && (
                 <Home
                   trips={trips}
@@ -217,6 +244,8 @@ export default function App() {
                   onSaveTrip={handleSaveTrip}
                   onDeleteTrip={handleDeleteTrip}
                   onSelectTrip={setSelectedTripId}
+                  tripForm={tripForm}
+                  onTripFormChange={setTripForm}
                 />
               )}
               {activeTab === 'Templates' && (
@@ -232,10 +261,18 @@ export default function App() {
                   onSaveGearItems={setGearItems}
                 />
               )}
-            </div>
+            </main>
+
+            {/* Undo toast */}
+            {undoState && (
+              <div className="fixed left-4 right-4 z-30 bg-[#1C1C1C]/95 backdrop-blur-xl border border-white/10 rounded-2xl px-4 py-3 flex items-center justify-between" style={{ bottom: 'calc(5rem + env(safe-area-inset-bottom, 0px))' }}>
+                <span className="text-sm text-[#F5F5F5]">{undoState.message}</span>
+                <button onClick={() => { undoState.onUndo(); clearTimeout(undoTimer.current); setUndoState(null) }} className="tap text-[#D9A441] font-semibold text-sm ml-4 flex-shrink-0">Undo</button>
+              </div>
+            )}
 
             {/* Floating pill nav */}
-            <nav className="fixed bottom-4 left-4 right-4 bg-[#1C1C1C]/90 backdrop-blur-xl border border-white/10 rounded-2xl flex overflow-hidden z-20">
+            <nav className="fixed left-4 right-4 bg-[#1C1C1C]/90 backdrop-blur-xl border border-white/10 rounded-2xl flex overflow-hidden z-20" style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom, 0px))' }}>
               {TABS.map(tab => (
                 <button
                   key={tab.id}
@@ -252,6 +289,7 @@ export default function App() {
             </nav>
           </>
         )}
+        </Suspense>
       </div>
     </div>
   )

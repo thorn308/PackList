@@ -1,4 +1,8 @@
+import { useState } from 'react'
+
 export default function Templates({ templates, onEdit, onDeleteTemplate }) {
+  const [pendingDeleteId, setPendingDeleteId] = useState(null)
+
   return (
     <div className="max-w-lg mx-auto px-4 py-6">
       <div className="flex items-center justify-between mb-6">
@@ -47,12 +51,23 @@ export default function Templates({ templates, onEdit, onDeleteTemplate }) {
                   >
                     Edit
                   </button>
-                  <button
-                    onClick={() => onDeleteTemplate(tpl.id)}
-                    className="tap text-xs text-red-400/80 border border-red-400/20 rounded-full px-3 py-1.5 transition-all duration-300"
-                  >
-                    Delete
-                  </button>
+                  {pendingDeleteId === tpl.id ? (
+                    <div className="flex gap-1.5">
+                      <button
+                        onClick={() => setPendingDeleteId(null)}
+                        className="tap text-xs text-[#D6CFC2]/60 border border-white/15 rounded-full px-2.5 py-1.5 transition-all duration-300"
+                      >Cancel</button>
+                      <button
+                        onClick={() => onDeleteTemplate(tpl.id)}
+                        className="tap text-xs text-red-400 border border-red-400/30 rounded-full px-2.5 py-1.5 transition-all duration-300"
+                      >Delete</button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setPendingDeleteId(tpl.id)}
+                      className="tap text-xs text-red-400/80 border border-red-400/20 rounded-full px-3 py-1.5 transition-all duration-300"
+                    >Delete</button>
+                  )}
                 </div>
               </div>
             </div>

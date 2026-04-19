@@ -1,6 +1,27 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 
 export default function GearPicker({ gearItems, existingNames = new Set(), onAdd, onClose }) {
+  const modalRef = useRef(null)
+
+  useEffect(() => {
+    function handleKey(e) {
+      if (e.key === 'Escape') { onClose(); return }
+      if (e.key !== 'Tab') return
+      const modal = modalRef.current
+      if (!modal) return
+      const focusable = [...modal.querySelectorAll('button, input, [tabindex]:not([tabindex="-1"])')]
+      if (focusable.length === 0) return
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault(); last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault(); first.focus()
+      }
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [onClose])
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState('All')
   const [selected, setSelected] = useState(new Set())
@@ -44,7 +65,7 @@ export default function GearPicker({ gearItems, existingNames = new Set(), onAdd
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#2B2B2B] flex flex-col">
+    <div ref={modalRef} role="dialog" aria-modal="true" aria-label="Select from Gear Library" className="fixed inset-0 z-50 bg-[#2B2B2B] flex flex-col">
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-4 bg-[#1C1C1C]/90 backdrop-blur-xl border-b border-white/10">
         <button onClick={onClose} className="tap text-[#D6CFC2]/60 text-sm transition-colors">✕</button>
@@ -67,7 +88,7 @@ export default function GearPicker({ gearItems, existingNames = new Set(), onAdd
           onChange={e => setSearch(e.target.value)}
           placeholder="Search gear..."
           autoFocus
-          className="w-full bg-white/[0.08] border border-white/15 rounded-2xl px-4 py-2.5 text-sm text-[#F5F5F5] placeholder:text-[#D6CFC2]/35 focus:outline-none focus:ring-1 focus:ring-[#D9A441]/60"
+          className="w-full bg-white/[0.08] border border-white/15 rounded-2xl px-4 py-2.5 text-base text-[#F5F5F5] placeholder:text-[#D6CFC2]/35 focus:outline-none focus:ring-1 focus:ring-[#D9A441]/60"
         />
       </div>
 

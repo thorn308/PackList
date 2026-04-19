@@ -1,5 +1,4 @@
 import Papa from 'papaparse'
-import * as XLSX from 'xlsx'
 import { uid } from './uid'
 
 /**
@@ -37,7 +36,13 @@ async function parseCsv(file) {
 
 async function parseXlsx(file) {
   const buf = await file.arrayBuffer()
-  const wb = XLSX.read(buf, { type: 'array' })
+  const XLSX = await import('xlsx')
+  let wb
+  try {
+    wb = XLSX.read(buf, { type: 'array' })
+  } catch {
+    throw new Error('Could not read Excel file — it may be corrupted.')
+  }
   const sheet = wb.Sheets[wb.SheetNames[0]]
   const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' })
   return rowsToTemplate(rows, file.name)
@@ -168,7 +173,13 @@ async function parseGearCsv(file) {
 
 async function parseGearXlsx(file) {
   const buf = await file.arrayBuffer()
-  const wb = XLSX.read(buf, { type: 'array' })
+  const XLSX = await import('xlsx')
+  let wb
+  try {
+    wb = XLSX.read(buf, { type: 'array' })
+  } catch {
+    throw new Error('Could not read Excel file — it may be corrupted.')
+  }
   const sheet = wb.Sheets[wb.SheetNames[0]]
   const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' })
   return rowsToGearItems(rows)

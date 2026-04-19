@@ -7,18 +7,23 @@ const DEFAULT_CATEGORIES = [
   'Documents', 'Electronics', 'Food & Drink', 'Misc',
 ]
 
-export default function Home({ trips, templates, onSaveTrip, onDeleteTrip, onSelectTrip }) {
-  const [showForm, setShowForm] = useState(false)
-  const [name, setName] = useState('')
-  const [templateId, setTemplateId] = useState('')
-  const [destination, setDestination] = useState('')
+export default function Home({ trips, templates, onSaveTrip, onDeleteTrip, onSelectTrip, tripForm, onTripFormChange }) {
+  const { showForm, name, destination, templateId, nameTouched } = tripForm
+  const [pendingDeleteId, setPendingDeleteId] = useState(null)
+
+  const sortedTrips = [...trips].sort((a, b) => {
+    if (!a.createdAt && !b.createdAt) return 0
+    if (!a.createdAt) return 1
+    if (!b.createdAt) return -1
+    return new Date(b.createdAt) - new Date(a.createdAt)
+  })
 
   function packedCount(trip) {
     return trip.items.filter(i => i.checked).length
   }
 
   function createTrip() {
-    if (!name.trim()) return
+    if (!name.trim()) { onTripFormChange(p => ({ ...p, nameTouched: true })); return }
 
     let items = []
     if (templateId) {
@@ -51,10 +56,7 @@ export default function Home({ trips, templates, onSaveTrip, onDeleteTrip, onSel
     }
 
     onSaveTrip(trip)
-    setName('')
-    setDestination('')
-    setTemplateId('')
-    setShowForm(false)
+    onTripFormChange({ showForm: false, name: '', destination: '', templateId: '', nameTouched: false })
   }
 
   return (
@@ -62,7 +64,7 @@ export default function Home({ trips, templates, onSaveTrip, onDeleteTrip, onSel
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-[32px] font-bold text-[#F5F5F5] tracking-tight leading-tight">My Trips</h1>
         <button
-          onClick={() => setShowForm(v => !v)}
+          onClick={() => onTripFormChange(p => ({ ...p, showForm: !p.showForm }))}
           className="tap bg-[#D9A441] text-[#2B2B2B] font-semibold px-5 py-2 rounded-full text-sm transition-all duration-300"
         >
           {showForm ? 'Cancel' : '+ New Trip'}
@@ -77,26 +79,30 @@ export default function Home({ trips, templates, onSaveTrip, onDeleteTrip, onSel
           <input
             type="text"
             value={name}
-            onChange={e => setName(e.target.value)}
+            onChange={e => onTripFormChange(p => ({ ...p, name: e.target.value }))}
+            onBlur={() => onTripFormChange(p => ({ ...p, nameTouched: true }))}
             placeholder="e.g. Fall Elk Hunt"
             autoFocus
-            className="w-full bg-white/[0.08] border border-white/15 rounded-xl px-3 py-2.5 text-sm text-[#F5F5F5] placeholder:text-[#D6CFC2]/35 focus:outline-none focus:ring-1 focus:ring-[#D9A441]/60 mb-3"
+            className={`w-full bg-white/[0.08] border rounded-xl px-3 py-2.5 text-base text-[#F5F5F5] placeholder:text-[#D6CFC2]/35 focus:outline-none focus:ring-1 mb-1 ${nameTouched && !name.trim() ? 'border-red-400/60 focus:ring-red-400/40' : 'border-white/15 focus:ring-[#D9A441]/60'}`}
           />
+          {nameTouched && !name.trim() && (
+            <p className="text-xs text-red-400 mb-2 px-1">Trip name is required</p>
+          )}
 
           <label className="block text-xs text-[#D6CFC2]/70 mb-1.5 font-medium uppercase tracking-wide">Destination</label>
           <input
             type="text"
             value={destination}
-            onChange={e => setDestination(e.target.value)}
+            onChange={e => onTripFormChange(p => ({ ...p, destination: e.target.value }))}
             placeholder="e.g. Rocky Mountain National Park"
-            className="w-full bg-white/[0.08] border border-white/15 rounded-xl px-3 py-2.5 text-sm text-[#F5F5F5] placeholder:text-[#D6CFC2]/35 focus:outline-none focus:ring-1 focus:ring-[#D9A441]/60 mb-3"
+            className="w-full bg-white/[0.08] border border-white/15 rounded-xl px-3 py-2.5 text-base text-[#F5F5F5] placeholder:text-[#D6CFC2]/35 focus:outline-none focus:ring-1 focus:ring-[#D9A441]/60 mb-3"
           />
 
           <label className="block text-xs text-[#D6CFC2]/70 mb-1.5 font-medium uppercase tracking-wide">Template</label>
           <select
             value={templateId}
-            onChange={e => setTemplateId(e.target.value)}
-            className="w-full bg-white/[0.08] border border-white/15 rounded-xl px-3 py-2.5 text-sm text-[#F5F5F5] focus:outline-none focus:ring-1 focus:ring-[#D9A441]/60 mb-5"
+            onChange={e => onTripFormChange(p => ({ ...p, templateId: e.target.value }))}
+            className="w-full bg-white/[0.08] border border-white/15 rounded-xl px-3 py-2.5 text-base text-[#F5F5F5] focus:outline-none focus:ring-1 focus:ring-[#D9A441]/60 mb-5"
           >
             <option value="">— Blank list —</option>
             {templates.map(t => (
@@ -123,7 +129,7 @@ export default function Home({ trips, templates, onSaveTrip, onDeleteTrip, onSel
       )}
 
       <div className="space-y-3">
-        {trips.map(trip => {
+        {sortedTrips.map(trip => {
           const packed = packedCount(trip)
           const total = trip.items.length
           return (
@@ -139,13 +145,24 @@ export default function Home({ trips, templates, onSaveTrip, onDeleteTrip, onSel
                     <p className="text-xs text-[#D6CFC2]/60 mt-0.5">{trip.destination}</p>
                   )}
                 </div>
-                <button
-                  onClick={e => { e.stopPropagation(); onDeleteTrip(trip.id) }}
-                  className="text-white/20 hover:text-red-400 text-xl leading-none ml-2 p-1 transition-colors"
-                  aria-label="Delete trip"
-                >
-                  ×
-                </button>
+                {pendingDeleteId === trip.id ? (
+                  <div className="flex gap-1.5 ml-2 flex-shrink-0" onClick={e => e.stopPropagation()}>
+                    <button
+                      onClick={e => { e.stopPropagation(); setPendingDeleteId(null) }}
+                      className="tap text-xs text-[#D6CFC2]/60 border border-white/15 rounded-full px-2.5 py-1 transition-all duration-300"
+                    >Cancel</button>
+                    <button
+                      onClick={e => { e.stopPropagation(); onDeleteTrip(trip.id) }}
+                      className="tap text-xs text-red-400 border border-red-400/30 rounded-full px-2.5 py-1 transition-all duration-300"
+                    >Delete</button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={e => { e.stopPropagation(); setPendingDeleteId(trip.id) }}
+                    className="text-white/20 hover:text-red-400 text-xl leading-none ml-2 p-1 transition-colors flex-shrink-0"
+                    aria-label="Delete trip"
+                  >×</button>
+                )}
               </div>
               {total === 0
                 ? <p className="text-xs text-[#D6CFC2]/40">No items yet — tap to add some.</p>
