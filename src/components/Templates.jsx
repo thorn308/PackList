@@ -4,7 +4,7 @@ export default function Templates({ templates, onEdit, onDeleteTemplate }) {
   const [pendingDeleteId, setPendingDeleteId] = useState(null)
 
   return (
-    <div className="max-w-lg mx-auto px-4 py-6">
+    <div className="max-w-lg mx-auto px-4" style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top, 0px))', paddingBottom: '2rem' }}>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-[32px] font-bold text-[#F5F5F5] tracking-tight leading-tight">Templates</h1>
         <button

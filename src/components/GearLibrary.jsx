@@ -149,7 +149,7 @@ export default function GearLibrary({ gearItems, onSaveGearItems }) {
   const existingCategories = [...new Set(gearItems.map(i => i.category))].sort()
 
   return (
-    <div className="max-w-lg mx-auto px-4 py-6 pb-28">
+    <div className="max-w-lg mx-auto px-4 pb-28" style={{ paddingTop: 'calc(1rem + env(safe-area-inset-top, 0px))' }}>
       <div className="flex items-center justify-between mb-2">
         <h1 className="text-[32px] font-bold text-[#F5F5F5] tracking-tight leading-tight">Gear Library</h1>
         <button
