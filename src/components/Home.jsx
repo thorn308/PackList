@@ -60,7 +60,7 @@ export default function Home({ trips, templates, onSaveTrip, onDeleteTrip, onSel
   }
 
   return (
-    <div className="max-w-lg mx-auto px-4 py-6">
+    <div className="max-w-lg mx-auto px-4" style={{ paddingTop: 'calc(3.5rem + env(safe-area-inset-top, 0px))', paddingBottom: 'calc(7rem + env(safe-area-inset-bottom, 0px))' }}>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-[32px] font-bold text-[#F5F5F5] tracking-tight leading-tight">My Trips</h1>
         <button
@@ -121,7 +121,7 @@ export default function Home({ trips, templates, onSaveTrip, onDeleteTrip, onSel
       )}
 
       {trips.length === 0 && !showForm && (
-        <div className="text-center py-20 text-[#D6CFC2]/50">
+        <div className="text-center py-28 text-[#D6CFC2]/50">
           <div className="text-5xl mb-4">⛺</div>
           <p className="text-base text-[#F5F5F5]/70">No trips yet.</p>
           <p className="text-sm mt-1">Tap <strong className="text-[#D9A441]">+ New Trip</strong> to get started.</p>
